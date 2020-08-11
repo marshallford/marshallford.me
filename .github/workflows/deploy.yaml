@@ -1,0 +1,48 @@
+on:
+  push:
+    branches:
+    - master
+name: deploy
+env:
+  TERRAFORM_VERSION: 0.13.0
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+  GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-20.04
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: setup terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+    - name: test
+      run: |
+        make terraform/init
+        make terraform/fmt
+        make terraform/validate
+  deploy:
+    name: deploy
+    needs:
+    - test
+    runs-on: ubuntu-20.04
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: setup terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+    - name: build container image
+      run: make build/docker
+    - name: docker login
+      run: make docker-login
+    - name: push container image
+      run: make docker-push
+    - name: terraform init
+      run: make terraform/init/backend
+    - name: terraform apply
+      run: make terraform/apply

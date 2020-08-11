@@ -1,0 +1,5 @@
+{{ $js := resources.Get "js/index.js" | js.Build (dict "target" "es2016" "minify" (not .Site.IsServer)) }}
+{{ if not .Site.IsServer }}{{ $js = $js | fingerprint }}{{ end }}
+<script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}"></script>
+</body>
+</html>

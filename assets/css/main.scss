@@ -1,0 +1,9 @@
+/*! Background pattern from Subtle Patterns */
+$header: '{{ (resources.Get "images/header_blur_big.jpg" | fingerprint ).Permalink }}';
+$bg: '{{ (resources.Get "images/axiom-pattern.png" | fingerprint ).Permalink }}';
+
+@import "html5-boilerplate/dist/css/normalize";
+@import "html5-boilerplate/dist/css/main";
+@import "bootstrap/scss/mixins/_breakpoints";
+@import "util";
+@import "app";

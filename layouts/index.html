@@ -1,0 +1,64 @@
+{{ $me := resources.Get "images/me.jpg" }}{{ $icons := resources.Get "images/symbol-defs.svg" }}
+{{ if not .Site.IsServer }}{{ $me = $me | fingerprint }}{{ $icons = $icons | fingerprint }}{{ end }}
+
+{{ partialCached "head" . }}
+<div id="hero">
+  <nav>
+    <ul>
+      <li><a alt="GitHub" href="https://github.com/marshallford"><svg><use xlink:href="{{ $icons.Permalink }}#icon-github"></use></svg></a></li>
+      <li><a alt="Twitter" href="https://twitter.com/marshallbford"><svg><use xlink:href="{{ $icons.Permalink }}#icon-twitter"></use></svg></a></li>
+      <li><a alt="Instagram" href="https://www.instagram.com/marshallbford"><svg><use xlink:href="{{ $icons.Permalink }}#icon-instagram"></use></svg></a></li>
+      <li><a alt="LinkedIn" href="https://www.linkedin.com/in/marshallbford"><svg><use xlink:href="{{ $icons.Permalink }}#icon-linkedin"></use></svg></a></li>
+      <li><a alt="Email" href="mailto:inbox@marshallford.me"><svg><use xlink:href="{{ $icons.Permalink }}#icon-email"></use></svg></a></li>
+    </ul>
+  </nav>
+  <header>
+    <div class="welcome">
+      <h1>Marshall Ford &mdash; {{ .Site.Params.description }}</h1>
+      <a href="#more" class="button about-me-button">
+        <span>About Me</span>
+        <svg><use xlink:href="{{ $icons.Permalink }}#icon-chevron-down"></use></svg>
+      </a>
+    </div>
+  </header>
+</div>
+<div id="more">
+  <div class="main">
+    <div class="row">
+      <section class="col col-2 aboutme">
+        <img src="{{ $me.Permalink }}" alt="Photo of Marshall Ford" />
+        {{ .Content }}
+      </section>
+      <section class="col col-2 projects">
+        <h2>Curated Projects</h2>
+        {{ range (where .Site.Pages "Section" "project").ByParam "order" }}
+          <div class="project">
+            <header>
+              <h3>{{ .Title }}</h3>
+              {{ range .Params.Pills }}
+                {{ if .link }}
+                  <a class="pill" href="{{ .link }}">
+                    <span>{{ .text }}</span>
+                    {{ if or (.icon) (.link) }}<svg><use xlink:href="{{ $icons.Permalink }}#icon-{{ .icon | default "link" }}"></use></svg>{{ end }}
+                  </a>
+                {{ else }}
+                  <div class="pill">
+                    <span>{{ .text }}</span>
+                    {{ if .icon }}<svg><use xlink:href="{{ $icons.Permalink }}#icon-{{ .icon }}"></use></svg>{{ end }}
+                  </div>
+                {{ end }}
+              {{ end }}
+            </header>
+            {{ .Content }}
+          </div>
+        {{ end }}
+      </section>
+    </div>
+    <div class="row">
+      <footer class="col">
+        <p>Marshall Ford | Powered by Hugo | Build: {{ .GitInfo.AbbreviatedHash }}</p>
+      </footer>
+    </div>
+  </div>
+</div>
+{{ partialCached "tail" . }}

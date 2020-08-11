@@ -1,0 +1,21 @@
+title: Marshall Ford
+baseURL: https://marshallford.me
+languageCode: en-us
+enableGitInfo: true
+enableRobotsTXT: true
+
+params:
+  author: Marshall Ford
+  description: DevOps Engineer & Full Stack Web Developer
+
+disableKinds:
+- section
+- taxonomy
+- taxonomyTerm
+- sitemap # TODO: "project" isn't a real archetype - find a way to exclude
+- RSS # TODO: "project" isn't a real archetype - find a way to exclude
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true # for icon shortcode
