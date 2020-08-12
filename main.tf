@@ -46,6 +46,7 @@ resource "google_cloud_run_service" "website" {
       containers {
         image = var.image
       }
+      container_concurrency = 512 # nginx worker_connections/2
     }
   }
   autogenerate_revision_name = true
