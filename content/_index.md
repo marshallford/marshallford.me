@@ -26,7 +26,7 @@ In the web development space I am passionate about:
 * Contributing to open source
 * Watches (and finding bargains)
 * Hip-Hop
-* Coffee and cocktails (separately and responsibly of course)
+* Coffee and cocktails, enjoyed separately and responsibly of course
 
 <h3 id="get-in-touch">Get in Touch{{< icon message >}}</h3>
 
