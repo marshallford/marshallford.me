@@ -4,7 +4,7 @@ on:
     - master
 name: deploy
 env:
-  TERRAFORM_VERSION: 0.13.0
+  TERRAFORM_VERSION: 0.13.3
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
   GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
   GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}

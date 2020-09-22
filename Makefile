@@ -27,11 +27,11 @@ DOCKER_FLAGS := --rm
 endif
 DOCKER := docker
 
-HUGO_VERSION ?= 0.74.3
+HUGO_VERSION ?= 0.75.1
 HUGO_RELEASE := https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_extended_$(HUGO_VERSION)_Linux-64bit.tar.gz
 HUGO := ./bin/hugo
 
-TERRAFORM_VERSION ?= 0.13.0
+TERRAFORM_VERSION ?= 0.13.3
 TERRAFORM_RELEASE := https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
 ifdef CI
 TERRAFORM := terraform
@@ -79,10 +79,10 @@ serve: serve/hugo
 serve/hugo:
 	$(HUGO) server -p 8080
 
-serve/python: build
+serve/python: build/hugo
 	python3 -m http.server -d public 8080
 
-serve/docker: docker-build
+serve/docker: build/docker
 	$(DOCKER) run $(DOCKER_FLAGS) -p 8080:8080 $(IMAGE)
 
 terraform/init:
