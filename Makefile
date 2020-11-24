@@ -27,11 +27,11 @@ DOCKER_FLAGS := --rm
 endif
 DOCKER := docker
 
-HUGO_VERSION ?= 0.75.1
+HUGO_VERSION ?= 0.78.2
 HUGO_RELEASE := https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_extended_$(HUGO_VERSION)_Linux-64bit.tar.gz
 HUGO := ./bin/hugo
 
-TERRAFORM_VERSION ?= 0.13.3
+TERRAFORM_VERSION ?= 0.13.5
 TERRAFORM_RELEASE := https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
 ifdef CI
 TERRAFORM := terraform
@@ -86,10 +86,7 @@ serve/docker: build/docker
 	$(DOCKER) run $(DOCKER_FLAGS) -p 8080:8080 $(IMAGE)
 
 terraform/init:
-	$(TERRAFORM) init -backend=false
-
-terraform/init/backend:
-	$(TERRAFORM) init -backend=true
+	$(TERRAFORM) init
 
 terraform/validate:
 	$(TERRAFORM) validate
@@ -106,4 +103,4 @@ terraform/apply:
 .PHONY: bin/dir bin/hugo bin/terraform build build/hugo build/docker \
 				docker-login docker-push \
         serve serve/hugo serve/python serve/docker \
-				terraform/init terraform/init/backend terraform/validate terraform/fmt terraform/fmt/fix terraform/apply
+				terraform/init terraform/validate terraform/fmt terraform/fmt/fix terraform/apply

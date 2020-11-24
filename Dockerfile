@@ -1,4 +1,4 @@
-FROM node:12.18.4-buster as builder
+FROM node:14.15.1-buster as builder
 
 ARG HUGO_RELEASE
 

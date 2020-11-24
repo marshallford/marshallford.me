@@ -4,7 +4,7 @@ on:
     - master
 name: deploy
 env:
-  TERRAFORM_VERSION: 0.13.3
+  TERRAFORM_VERSION: 0.13.5
   GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
   GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
   GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
@@ -43,6 +43,6 @@ jobs:
     - name: push container image
       run: make docker-push
     - name: terraform init
-      run: make terraform/init/backend
+      run: make terraform/init
     - name: terraform apply
       run: make terraform/apply

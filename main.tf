@@ -3,7 +3,7 @@ terraform {
     bucket = "marshallford-tf-state-marshallford-me"
   }
   required_providers {
-    google = "~> 3.33"
+    google = "~> 3.48"
   }
 }
 
