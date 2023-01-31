@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-    - master
+    - main
 name: deploy
 env:
   TERRAFORM_VERSION: 0.13.5
