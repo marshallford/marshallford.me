@@ -1,0 +1,61 @@
+{{ define "main" }}
+<div id="hero">
+  <nav>
+    <ul>
+      <li><a aria-label="GitHub" href="https://github.com/marshallford">{{ partial "icon.html" "github" }}</a></li>
+      <li><a aria-label="Twitter" href="https://twitter.com/marshallbford">{{ partial "icon.html" "twitter" }}</a></li>
+      <li><a aria-label="Instagram" href="https://www.instagram.com/marshallbford">{{ partial "icon.html" "instagram" }}</a></li>
+      <li><a aria-label="LinkedIn" href="https://www.linkedin.com/in/marshallbford">{{ partial "icon.html" "linkedin" }}</a></li>
+      <li><a aria-label="Email" href="mailto:inbox@marshallford.me">{{ partial "icon.html" "email" }}</a></li>
+    </ul>
+  </nav>
+  <header>
+    <div class="welcome">
+      <h1>{{ .Site.Title }} — {{ .Site.Params.description }}</h1>
+      <a href="#more" class="button about-me-button">
+        <span>About Me</span>
+        {{ partial "icon.html" "chevron-down" }}
+      </a>
+    </div>
+  </header>
+</div>
+<div id="more">
+  <div class="main">
+    <div class="row">
+      <section class="col col-2 aboutme">
+        {{ partial "image.html" (dict "Name" "me.jpg" "Alt" .Site.Title) }}
+        {{ .Content }}
+      </section>
+      <section class="col col-2 projects">
+        <h2>Curated Projects</h2>
+        {{ range (where .Site.Pages "Section" "project").ByParam "order" }}
+          <div class="project">
+            <header>
+              <h3>{{ .Title }}</h3>
+              {{ range .Params.Pills }}
+                {{ if .link }}
+                  <a class="pill" href="{{ .link }}">
+                    <span>{{ .text }}</span>
+                    {{ if or (.icon) (.link) }}{{ partial "icon.html" (.icon | default "link") }}{{ end }}
+                  </a>
+                {{ else }}
+                  <div class="pill">
+                    <span>{{ .text }}</span>
+                    {{ if .icon }}{{ partial "icon.html" .icon }}{{ end }}
+                  </div>
+                {{ end }}
+              {{ end }}
+            </header>
+            {{ .Content }}
+          </div>
+        {{ end }}
+      </section>
+    </div>
+    <div class="row">
+      <footer class="col">
+        <p>{{ .Site.Title }} | Powered by Hugo | Build: {{ .GitInfo.AbbreviatedHash }}</p>
+      </footer>
+    </div>
+  </div>
+</div>
+{{ end }}

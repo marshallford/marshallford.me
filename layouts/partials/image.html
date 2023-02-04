@@ -1,0 +1,9 @@
+{{ with resources.Get (printf "images/%s" .Name) }}
+  {{ with .Resize (printf "%dx%d webp" ($.Width | default .Width) ($.Height | default .Height)) }}
+    {{ $img := . }}
+    {{ if hugo.IsProduction }}
+      {{ $img = $img | fingerprint }}
+    {{ end }}
+    <img src="{{ $img.RelPermalink }}" alt="{{ $.Alt }}" width="{{ .Width }}" height="{{ .Height }}" />
+  {{ end }}
+{{ end }}
