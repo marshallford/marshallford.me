@@ -1,2 +1,1 @@
-{{ $icons := resources.Get "images/symbol-defs.svg" | fingerprint }}
-<span><svg><use xlink:href="{{ $icons.Permalink }}#icon-{{ .Get 0 }}"></use></svg></span>
+<span>{{ partialCached "icon.html" (.Get 0) (.Get 0) }}</span>

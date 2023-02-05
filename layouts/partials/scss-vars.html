@@ -1,0 +1,21 @@
+{{ $header_url := "" }}
+{{ $header_gradient := "" }}
+{{ with resources.Get "images/header_blur_big.jpg" }}
+  {{ with .Resize (printf "%dx%d webp" .Width .Height) }}
+    {{ $header_url = .RelPermalink }}
+    {{ $header_gradient = partial "gradient.html" . }}
+  {{ end }}
+{{ end }}
+
+{{ $bg_url := "" }}
+{{ with resources.Get "images/axiom-pattern.png" }}
+  {{ with .Resize (printf "%dx%d webp" .Width .Height) }}
+    {{ $bg_url = .RelPermalink }}
+  {{ end }}
+{{ end }}
+
+{{ return dict
+  "header_url" $header_url
+  "header_gradient" $header_gradient
+  "bg_url" $bg_url
+}}

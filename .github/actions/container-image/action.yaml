@@ -1,0 +1,52 @@
+name: Container image
+
+inputs:
+  push:
+    required: false
+    type: boolean
+    default: false
+  image:
+    required: true
+    type: string
+  tags:
+    required: false
+    type: string
+  build-args:
+    required: false
+    type: string
+  registry-username:
+    required: false
+    type: string
+  registry-password:
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+  - name: Meta
+    id: meta
+    uses: docker/metadata-action@v4
+    with:
+      images: ${{ inputs.image }}
+      tags: |
+        ${{ inputs.tags }}
+        type=sha,prefix=,suffix=-${{ github.run_attempt }}
+      flavor: |
+        latest=false
+  - name: Login
+    if: ${{ inputs.push == 'true' }}
+    uses: docker/login-action@v2
+    with:
+      registry: ${{ inputs.image }}
+      username: ${{ inputs.registry-username }}
+      password: ${{ inputs.registry-password }}
+  - name: Build${{ inputs.push && ' and push' || '' }}
+    uses: docker/build-push-action@v4
+    with:
+      context: .
+      pull: true
+      push: ${{ inputs.push }}
+      build-args: ${{ inputs.build-args }}
+      labels: ${{ steps.meta.outputs.labels }}
+      tags: ${{ steps.meta.outputs.tags }}

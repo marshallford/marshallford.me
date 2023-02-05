@@ -1,5 +1,4 @@
 title: Marshall Ford
-baseURL: https://marshallford.me
 languageCode: en-us
 enableGitInfo: true
 enableRobotsTXT: true
@@ -19,3 +18,8 @@ markup:
   goldmark:
     renderer:
       unsafe: true # for icon shortcode
+
+# minify handled by postcss and esbuild
+minify:
+  disableCSS: false
+  disableJS: false

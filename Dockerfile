@@ -1,32 +1,29 @@
-FROM node:14.15.1-buster as builder
+FROM docker.io/node:18.13.0-bullseye as builder
 
 ARG HUGO_RELEASE
-
-WORKDIR /tmp
-ADD ${HUGO_RELEASE} hugo.tar.gz
-RUN tar -xzf hugo.tar.gz && cp hugo /usr/local/bin
+RUN wget -q $HUGO_RELEASE -O hugo.tar.gz && tar -xzf hugo.tar.gz && cp hugo /usr/local/bin
 
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN hugo --minify --cleanDestinationDir
+RUN hugo --minify --cleanDestinationDir --panicOnWarning
 
-FROM nginxinc/nginx-unprivileged:1.18.0-alpine
+FROM docker.io/alpine/git:2.36.3 as h5bp-server-configs-nginx
 
-ARG MAINTAINER
-ARG CREATED
-ARG REVISION
-ARG VERSION
-ARG TITLE
-ARG REPOSITORY_URL
+WORKDIR /repo
+RUN git config --global advice.detachedHead false && \
+    git clone --depth 1 --branch 5.0.0 https://github.com/h5bp/server-configs-nginx.git .
 
-LABEL maintainer=$MAINTAINER
-LABEL org.opencontainers.image.created=$CREATED \
-      org.opencontainers.image.revision=$REVISION \
-      org.opencontainers.image.version=$VERSION \
-      org.opencontainers.image.title=$TITLE \
-      org.opencontainers.image.source=$REPOSITORY_URL \
-      org.opencontainers.image.url=$REPOSITORY_URL
+FROM docker.io/nginxinc/nginx-unprivileged:1.23.3-alpine
 
-COPY --from=builder /app/public /usr/share/nginx/html
+ENV NGINX_HOST=localhost
+
+WORKDIR /etc/nginx
+RUN rm -rf *
+COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/h5bp h5bp
+COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/conf.d/no-ssl.default.conf conf.d/
+COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/nginx.conf /repo/mime.types ./
+RUN sed -i -e "s/user www-data;//g" -e "s/\/var\/run\/nginx.pid/\/tmp\/nginx.pid/g" nginx.conf
+COPY --chown=nginx:nginx default.conf.template templates/
+COPY --chown=nginx:nginx --from=builder /app/public /usr/share/nginx/html

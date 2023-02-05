@@ -1,0 +1,46 @@
+name: CI
+
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - edited
+    branches:
+    - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Eject Makefile variables
+      run: eval "$(make -q eject/github)"
+    - name: EditorConfig
+      uses: docker://docker.io/mstruebing/editorconfig-checker:2.4.0
+    - name: Yamllint
+      uses: docker://docker.io/pipelinecomponents/yamllint:0.23.0
+      with:
+        args: yamllint .
+    - name: Build container image
+      uses: ./.github/actions/container-image
+      with:
+        image: ${{ env.MAKEFILE_IMAGE }}
+        tags: ci
+        build-args:
+          HUGO_RELEASE=${{ env.MAKEFILE_HUGO_RELEASE }}
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: .nvmrc
+    - name: Lighthouse
+      run: |
+        npm install -g @lhci/cli@0.10.0
+        make test/lighthouse
