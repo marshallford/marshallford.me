@@ -4,7 +4,7 @@ Personal portfolio/about-me site.
 
 ## Stack
 
-* SSG with [Hugo](https://github.com/gohugoio/hugo)
+* SSG via [Hugo](https://github.com/gohugoio/hugo)
 * Designed with [normalize.css + H5BP](https://github.com/h5bp/html5-boilerplate)
 * Styles written in SCSS and transformed with [PostCSS](https://postcss.org/)
 * Google Fonts -- Open Sans and Montserrat
