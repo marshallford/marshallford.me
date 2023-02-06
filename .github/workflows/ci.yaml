@@ -41,6 +41,7 @@ jobs:
       with:
         node-version-file: .nvmrc
     - name: Lighthouse
+      # TODO cache npm
       run: |
         npm install -g @lhci/cli@0.10.0
         make test/lighthouse

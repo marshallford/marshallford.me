@@ -49,6 +49,7 @@ runs:
     uses: docker/build-push-action@v4
     with:
       context: .
+      load: true
       pull: true
       push: ${{ inputs.push }}
       cache-from: type=gha
