@@ -43,3 +43,9 @@ variable "aws_web_identity_token_file" {
   sensitive = true
   default   = null
 }
+
+variable "image" {
+  type     = string
+  nullable = false
+  default  = "us-docker.pkg.dev/cloudrun/container/hello"
+}

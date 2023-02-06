@@ -9,7 +9,7 @@ resource "google_cloud_run_v2_service" "this" {
       max_instance_count = 2
     }
     containers {
-      image = "us-docker.pkg.dev/cloudrun/container/hello"
+      image = var.image
       env {
         name  = "NGINX_HOST"
         value = data.aws_route53_zone.this.name
@@ -27,16 +27,17 @@ resource "google_cloud_run_v2_service" "this" {
     }
   }
   # deploy with gcloud run deploy
-  lifecycle {
-    ignore_changes = [
-      annotations["client.knative.dev/user-image"],
-      client,
-      client_version,
-      template[0].annotations["client.knative.dev/user-image"],
-      template[0].revision,
-      template[0].containers[0].image,
-    ]
-  }
+  # https://github.com/hashicorp/terraform-provider-google/issues/13410#issuecomment-1404610413
+  # lifecycle {
+  #   ignore_changes = [
+  #     annotations["client.knative.dev/user-image"],
+  #     client,
+  #     client_version,
+  #     template[0].annotations["client.knative.dev/user-image"],
+  #     template[0].revision,
+  #     template[0].containers[0].image,
+  #   ]
+  # }
 }
 
 resource "google_cloud_run_v2_service_iam_binding" "this" {
