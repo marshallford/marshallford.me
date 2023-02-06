@@ -24,14 +24,18 @@ inputs:
 runs:
   using: composite
   steps:
+  - name: Setup QEMU
+    uses: docker/setup-qemu-action@v2
+  - name: Setup Buildx
+    uses: docker/setup-buildx-action@v2
   - name: Meta
     id: meta
     uses: docker/metadata-action@v4
     with:
       images: ${{ inputs.image }}
       tags: |
-        ${{ inputs.tags }}
         type=sha,prefix=,suffix=-${{ github.run_attempt }}
+        ${{ inputs.tags }}
       flavor: |
         latest=false
   - name: Login
@@ -47,6 +51,12 @@ runs:
       context: .
       pull: true
       push: ${{ inputs.push }}
+      cache-from: type=gha
+      cache-to: type=gha,mode=max
       build-args: ${{ inputs.build-args }}
       labels: ${{ steps.meta.outputs.labels }}
       tags: ${{ steps.meta.outputs.tags }}
+
+outputs:
+  json:
+    value: ${{ steps.meta.outputs.json }}
