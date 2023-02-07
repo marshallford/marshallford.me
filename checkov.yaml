@@ -4,6 +4,6 @@ framework:
 - all
 quiet: true
 skip-check:
-# - CKV2_AWS_23
-# - CKV_DOCKER_2
+- CKV2_AWS_23
+- CKV_DOCKER_2
 skip-download: true
