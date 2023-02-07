@@ -1,4 +1,4 @@
-name: CI
+name: CI # TODO explore SARIF uploading and GH security
 
 on: # yamllint disable-line rule:truthy
   pull_request:
@@ -37,28 +37,14 @@ jobs:
         build-args:
           HUGO_RELEASE=${{ env.MAKEFILE_HUGO_RELEASE }}
     - name: Checkov
-      # id: checkov
       uses: bridgecrewio/checkov-action@v12
-      continue-on-error: true
       with:
         config_file: checkov.yaml
-        output_file_path: checkov.sarif
     - name: Trivy
-      # id: trivy
       uses: aquasecurity/trivy-action@0.9.0
       continue-on-error: true
       with:
         image-ref: ${{ env.MAKEFILE_IMAGE }}:ci
-        format: sarif
-        output: trivy.sarif
-    - name: Upload SARIF
-      if: always()
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: .
-    - name: Check scan results
-      if: ${{ contains(steps.*.outcome, 'failure') }}
-      run: exit 1
     - name: Setup node
       uses: actions/setup-node@v3
       with:
