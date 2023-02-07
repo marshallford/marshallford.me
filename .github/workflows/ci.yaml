@@ -11,8 +11,8 @@ on: # yamllint disable-line rule:truthy
     - main
 
 permissions:
-  id-token: write
   contents: read
+  security-events: write
 
 jobs:
   ci:
@@ -36,12 +36,35 @@ jobs:
         tags: ci
         build-args:
           HUGO_RELEASE=${{ env.MAKEFILE_HUGO_RELEASE }}
+    - name: Checkov
+      id: checkov
+      uses: bridgecrewio/checkov-action@master
+      continue-on-error: true
+      with:
+        config_file: checkov.yaml
+        output_file_path: reports/checkov.sarif
+    - name: Trivy
+      id: trivy
+      uses: aquasecurity/trivy-action@master
+      continue-on-error: true
+      with:
+        image-ref: ${{ env.MAKEFILE_IMAGE }}:ci
+        format: sarif
+        output: reports/trivy.sarif
+    - name: Upload SARIF
+      if: always()
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: reports
+    - name: Check scan results
+      if: ${{ contains(steps.*.outcome, 'failure') }}
+      run: exit 1
     - name: Setup node
       uses: actions/setup-node@v3
       with:
         node-version-file: .nvmrc
+        cache: npm
     - name: Lighthouse
-      # TODO cache npm
       run: |
         npm install -g @lhci/cli@0.10.0
         make test/lighthouse

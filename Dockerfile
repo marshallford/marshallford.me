@@ -17,7 +17,7 @@ RUN git config --global advice.detachedHead false && \
 
 FROM docker.io/nginxinc/nginx-unprivileged:1.23.3-alpine
 
-ENV NGINX_HOST=localhost
+USER nginx
 
 WORKDIR /etc/nginx
 RUN rm -rf *
@@ -27,3 +27,5 @@ COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/nginx.conf /repo
 RUN sed -i -e "s/user www-data;//g" -e "s/\/var\/run\/nginx.pid/\/tmp\/nginx.pid/g" nginx.conf
 COPY --chown=nginx:nginx default.conf.template templates/
 COPY --chown=nginx:nginx --from=builder /app/public /usr/share/nginx/html
+
+ENV NGINX_HOST=localhost
