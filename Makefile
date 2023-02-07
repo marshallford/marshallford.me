@@ -1,3 +1,5 @@
+# TODO add support for checkov and trivy
+
 default: serve
 EXISTING_VARS := $(.VARIABLES)
 

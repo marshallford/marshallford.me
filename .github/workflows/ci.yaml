@@ -1,4 +1,4 @@
-name: CI
+name: CI # TODO explore SARIF uploading and GH security
 
 on: # yamllint disable-line rule:truthy
   pull_request:
@@ -11,8 +11,8 @@ on: # yamllint disable-line rule:truthy
     - main
 
 permissions:
-  id-token: write
   contents: read
+  security-events: write
 
 jobs:
   ci:
@@ -36,12 +36,21 @@ jobs:
         tags: ci
         build-args:
           HUGO_RELEASE=${{ env.MAKEFILE_HUGO_RELEASE }}
+    - name: Checkov
+      uses: bridgecrewio/checkov-action@v12
+      with:
+        config_file: checkov.yaml
+    - name: Trivy
+      uses: aquasecurity/trivy-action@0.9.0
+      continue-on-error: true
+      with:
+        image-ref: ${{ env.MAKEFILE_IMAGE }}:ci
     - name: Setup node
       uses: actions/setup-node@v3
       with:
         node-version-file: .nvmrc
+        cache: npm
     - name: Lighthouse
-      # TODO cache npm
       run: |
         npm install -g @lhci/cli@0.10.0
         make test/lighthouse
