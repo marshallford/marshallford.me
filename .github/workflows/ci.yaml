@@ -42,6 +42,7 @@ jobs:
       continue-on-error: true
       with:
         config_file: checkov.yaml
+        output_file_path: reports
     - name: Trivy
       # id: trivy
       uses: aquasecurity/trivy-action@0.9.0
