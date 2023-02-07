@@ -37,15 +37,14 @@ jobs:
         build-args:
           HUGO_RELEASE=${{ env.MAKEFILE_HUGO_RELEASE }}
     - name: Checkov
-      id: checkov
-      uses: bridgecrewio/checkov-action@master
+      # id: checkov
+      uses: bridgecrewio/checkov-action@v12
       continue-on-error: true
       with:
         config_file: checkov.yaml
-        output_file_path: reports/checkov.sarif
     - name: Trivy
-      id: trivy
-      uses: aquasecurity/trivy-action@master
+      # id: trivy
+      uses: aquasecurity/trivy-action@0.9.0
       continue-on-error: true
       with:
         image-ref: ${{ env.MAKEFILE_IMAGE }}:ci
