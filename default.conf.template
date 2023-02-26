@@ -1,13 +1,13 @@
 server {
-  listen 8080;
-  listen [::]:8080;
+  listen ${PORT};
+  listen [::]:${PORT};
   server_name www.${NGINX_HOST};
   return 301 $scheme://${NGINX_HOST}$request_uri;
 }
 
 server {
-  listen 8080;
-  listen [::]:8080;
+  listen ${PORT};
+  listen [::]:${PORT};
   server_name ${NGINX_HOST};
   root /usr/share/nginx/html;
   include h5bp/errors/custom_errors.conf;

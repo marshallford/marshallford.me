@@ -14,6 +14,10 @@ resource "google_cloud_run_v2_service" "this" {
         name  = "NGINX_HOST"
         value = data.aws_route53_zone.this.name
       }
+      env {
+        name  = "REGION"
+        value = var.google_region
+      }
       startup_probe {
         http_get {
           path = "/"
@@ -51,7 +55,7 @@ resource "google_cloud_run_v2_service_iam_binding" "this" {
 
 resource "google_cloud_run_domain_mapping" "apex" {
   name     = data.aws_route53_zone.this.name
-  location = var.google_region
+  location = google_cloud_run_v2_service.this.location
   metadata {
     namespace = var.google_project
   }
@@ -62,7 +66,7 @@ resource "google_cloud_run_domain_mapping" "apex" {
 
 resource "google_cloud_run_domain_mapping" "www" {
   name     = "www.${data.aws_route53_zone.this.name}"
-  location = var.google_region
+  location = google_cloud_run_v2_service.this.location
   metadata {
     namespace = var.google_project
   }

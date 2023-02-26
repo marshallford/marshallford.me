@@ -3,11 +3,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.51.0"
+      version = "4.54.0"
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "4.52.0"
+      version = "4.56.0"
     }
   }
   backend "s3" {
