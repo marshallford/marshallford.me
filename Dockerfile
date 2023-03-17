@@ -1,4 +1,4 @@
-FROM docker.io/node:18.13.0-bullseye as builder
+FROM docker.io/node:18.15.0-bullseye as builder
 
 ARG HUGO_RELEASE
 RUN wget -q $HUGO_RELEASE -O hugo.tar.gz && tar -xzf hugo.tar.gz && cp hugo /usr/local/bin

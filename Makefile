@@ -16,20 +16,32 @@ DOCKER_RUN := $(DOCKER) run $(DOCKER_FLAGS)
 EDITORCONFIG_CHECKER_VERSION ?= 2.4.0
 EDITORCONFIG_CHECKER := $(DOCKER_RUN) -v=$(CURDIR):/check docker.io/mstruebing/editorconfig-checker:$(EDITORCONFIG_CHECKER_VERSION)
 
+SHELLCHECK_VERSION ?= 0.9.0
+SHELLCHECK := $(DOCKER_RUN) -v=$(CURDIR):/mnt docker.io/koalaman/shellcheck:v$(SHELLCHECK_VERSION)
+
 YAMLLINT_VERSION ?= 0.23.0
 YAMLLINT := $(DOCKER_RUN) -v=$(CURDIR):/code docker.io/pipelinecomponents/yamllint:$(YAMLLINT_VERSION) yamllint
 
-HUGO_VERSION ?= 0.110.0
+HUGO_VERSION ?= 0.111.3
 HUGO_RELEASE := https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_extended_$(HUGO_VERSION)_Linux-64bit.tar.gz
 HUGO ?= ./.bin/hugo/$(HUGO_VERSION)/hugo
 
-lint: lint/editorconfig lint/yamllint
+lint: lint/editorconfig lint/shellcheck lint/yamllint
 
 lint/editorconfig:
 	$(EDITORCONFIG_CHECKER)
 
+lint/shellcheck:
+	$(SHELLCHECK) $(shell find . -type f -not -path '*/\.bin/*' -name '*.sh')
+
 lint/yamllint:
 	$(YAMLLINT) .
+
+test: test/lighthouse
+
+# TODO use lhci from npm/nvm
+test/lighthouse:
+	lhci autorun
 
 bin/hugo $(HUGO):
 	mkdir -p $(dir $(HUGO))
@@ -39,6 +51,7 @@ bin/hugo $(HUGO):
 	cp $(TMP)/$(@F) $(HUGO)
 
 build: build/hugo
+
 build/hugo: $(HUGO)
 	$(HUGO) --minify --cleanDestinationDir --panicOnWarning --templateMetrics --templateMetricsHints
 
@@ -46,11 +59,6 @@ build/docker:
 	$(DOCKER) build --pull . \
 		--build-arg HUGO_RELEASE=$(HUGO_RELEASE) \
 		-t $(IMAGE_WITH_TAG)
-
-test: test/lighthouse
-
-test/lighthouse:
-	lhci autorun
 
 serve: serve/hugo
 
@@ -67,5 +75,6 @@ eject/github:
 	$(foreach v, $(filter-out $(EXISTING_VARS) EXISTING_VARS,$(.VARIABLES)), \
 	$(info echo "MAKEFILE_$(v)=$($(v))" >> $$GITHUB_ENV))
 
-.PHONY: bin/hugo bin/terraform build build/hugo build/docker test test/lighthouse \
+.PHONY: lint lint/editorconfig lint/shellcheck lint/yamllint test test/lighthouse \
+				bin/hugo build build/hugo build/docker \
 				serve serve/hugo serve/python serve/docker eject/github

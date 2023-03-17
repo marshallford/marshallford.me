@@ -52,5 +52,5 @@ jobs:
         cache: npm
     - name: Lighthouse
       run: |
-        npm install -g @lhci/cli@0.10.0
+        npm install -g @lhci/cli@0.11.0
         make test/lighthouse
