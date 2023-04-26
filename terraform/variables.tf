@@ -37,12 +37,12 @@ variable "aws_account_id" {
   nullable = false
 }
 
-# variable "aws_web_identity_token_file" {
-#   type      = string
-#   nullable  = true
-#   sensitive = true
-#   default   = null
-# }
+variable "aws_web_identity_token_file" {
+  type      = string
+  nullable  = true
+  sensitive = true
+  default   = null
+}
 
 variable "image" {
   type     = string

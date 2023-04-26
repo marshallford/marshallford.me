@@ -26,7 +26,7 @@ jobs:
     - name: EditorConfig
       uses: docker://docker.io/mstruebing/editorconfig-checker:2.4.0
     - name: Yamllint
-      uses: docker://docker.io/pipelinecomponents/yamllint:0.23.0
+      uses: docker://docker.io/pipelinecomponents/yamllint:0.25.0
       with:
         args: yamllint .
     - name: Build container image
@@ -41,7 +41,7 @@ jobs:
       with:
         config_file: checkov.yaml
     - name: Trivy
-      uses: aquasecurity/trivy-action@0.9.0
+      uses: aquasecurity/trivy-action@0.10.0
       continue-on-error: true
       with:
         image-ref: ${{ env.MAKEFILE_IMAGE }}:ci
@@ -52,5 +52,5 @@ jobs:
         cache: npm
     - name: Lighthouse
       run: |
-        npm install -g @lhci/cli@0.11.0
+        npm install -g @lhci/cli@0.12.0
         make test/lighthouse

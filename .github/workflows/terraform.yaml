@@ -75,8 +75,8 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          import { promises as fs } from 'fs'
-          import { join } from 'path'
+          const { promises: fs } = require('fs')
+          const { join } = require('path')
           const file = join(await fs.mkdtemp(join(process.env.RUNNER_TEMP, 'aws-web-identity-token-')), 'token')
           await fs.writeFile(file, await core.getIDToken('sts.amazonaws.com'))
           core.exportVariable('AWS_WEB_IDENTITY_TOKEN_FILE', file)

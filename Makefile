@@ -19,7 +19,7 @@ EDITORCONFIG_CHECKER := $(DOCKER_RUN) -v=$(CURDIR):/check docker.io/mstruebing/e
 SHELLCHECK_VERSION ?= 0.9.0
 SHELLCHECK := $(DOCKER_RUN) -v=$(CURDIR):/mnt docker.io/koalaman/shellcheck:v$(SHELLCHECK_VERSION)
 
-YAMLLINT_VERSION ?= 0.23.0
+YAMLLINT_VERSION ?= 0.25.0
 YAMLLINT := $(DOCKER_RUN) -v=$(CURDIR):/code docker.io/pipelinecomponents/yamllint:$(YAMLLINT_VERSION) yamllint
 
 DARTSASS_VERSION ?= 1.62.0
