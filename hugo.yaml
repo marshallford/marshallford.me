@@ -23,3 +23,10 @@ markup:
 minify:
   disableCSS: false
   disableJS: false
+
+module:
+  mounts:
+  - source: assets
+    target: assets
+  - source: node_modules/@fortawesome/fontawesome-free/svgs
+    target: assets/images/fontawesome-svgs

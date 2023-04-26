@@ -6,23 +6,11 @@
     <meta name="author" content="{{ .Site.Params.author }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <base href="{{ .Site.BaseURL }}">
-    {{ with resources.Get "css/main.scss" }}
-      {{ $opts := dict
-        "vars" (partialCached "scss-vars.html" .)
-        "includePaths" (slice "node_modules")
-      }}
-      {{ if hugo.IsProduction }}
-        {{ with . | toCSS $opts | postCSS | fingerprint }}
-          <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
-        {{ end }}
-      {{ else }}
-        {{ with . | toCSS (merge $opts (dict "enableSourceMap" true)) }}
-          <link rel="stylesheet" href="{{ .RelPermalink }}">
-        {{ end }}
-      {{ end }}
-    {{ end }}
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans:400,400i,700&display=swap" rel="stylesheet">
+    {{ partialCached "css.html" . }}
+    {{ partialCached "js.html" . }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
@@ -33,19 +21,5 @@
   </head>
   <body>
     {{ block "main" . }}{{ end }}
-    {{ with resources.Get "js/index.js" }}
-      {{ $opts := dict
-        "target" "es2016"
-      }}
-      {{ if hugo.IsProduction }}
-        {{ with . | js.Build (merge $opts (dict "minify" true)) | fingerprint }}
-          <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
-        {{ end }}
-      {{ else }}
-        {{ with . | js.Build (merge $opts (dict "sourceMap" "external")) }}
-          <script src="{{ .RelPermalink }}"></script>
-        {{ end }}
-      {{ end }}
-    {{ end }}
   </body>
 </html>

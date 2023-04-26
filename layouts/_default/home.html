@@ -2,11 +2,11 @@
 <div id="hero">
   <nav>
     <ul>
-      <li><a aria-label="GitHub" href="https://github.com/marshallford">{{ partial "icon.html" "github" }}</a></li>
-      <li><a aria-label="Twitter" href="https://twitter.com/marshallbford">{{ partial "icon.html" "twitter" }}</a></li>
-      <li><a aria-label="Instagram" href="https://www.instagram.com/marshallbford">{{ partial "icon.html" "instagram" }}</a></li>
-      <li><a aria-label="LinkedIn" href="https://www.linkedin.com/in/marshallbford">{{ partial "icon.html" "linkedin" }}</a></li>
-      <li><a aria-label="Email" href="mailto:inbox@marshallford.me">{{ partial "icon.html" "email" }}</a></li>
+      <li><a aria-label="GitHub" href="https://github.com/marshallford">{{ partial "fa-icon.html" "github" }}</a></li>
+      <li><a aria-label="Twitter" href="https://twitter.com/marshallbford">{{ partial "fa-icon.html" "twitter" }}</a></li>
+      <li><a aria-label="Instagram" href="https://www.instagram.com/marshallbford">{{ partial "fa-icon.html" "instagram" }}</a></li>
+      <li><a aria-label="LinkedIn" href="https://www.linkedin.com/in/marshallbford">{{ partial "fa-icon.html" "linkedin-in" }}</a></li>
+      <li><a aria-label="Email" href="mailto:inbox@marshallford.me">{{ partial "fa-icon.html" "solid/inbox" }}</a></li>
     </ul>
   </nav>
   <header>
@@ -14,7 +14,7 @@
       <h1>{{ .Site.Title }} — {{ .Site.Params.description }}</h1>
       <a href="#more" class="button about-me-button">
         <span>About Me</span>
-        {{ partial "icon.html" "chevron-down" }}
+        {{ partial "fa-icon.html" "solid/chevron-down" }}
       </a>
     </div>
   </header>
@@ -23,7 +23,7 @@
   <div class="main">
     <div class="row">
       <section class="col col-2 aboutme">
-        {{ partial "image.html" (dict "Name" "me.jpg" "Alt" .Site.Title) }}
+        {{ partialCached "image.html" (dict "Name" "me.jpg" "Alt" .Site.Title "Lazy" true) "me.jpg" }}
         {{ .Content }}
       </section>
       <section class="col col-2 projects">
@@ -36,12 +36,12 @@
                 {{ if .link }}
                   <a class="pill" href="{{ .link }}">
                     <span>{{ .text }}</span>
-                    {{ if or (.icon) (.link) }}{{ partial "icon.html" (.icon | default "link") }}{{ end }}
+                    {{ if or (.icon) (.link) }}{{ partial "fa-icon.html" (.icon | default "link") }}{{ end }}
                   </a>
                 {{ else }}
                   <div class="pill">
                     <span>{{ .text }}</span>
-                    {{ if .icon }}{{ partial "icon.html" .icon }}{{ end }}
+                    {{ if .icon }}{{ partial "fa-icon.html" .icon }}{{ end }}
                   </div>
                 {{ end }}
               {{ end }}

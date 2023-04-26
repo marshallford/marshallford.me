@@ -17,11 +17,13 @@ permissions:
   id-token: write
   contents: read
 
+concurrency: terraform-${{ github.event_name != 'pull_request' && 'apply' || 'plan' }}
+
 jobs:
   artifacts:
     name: Create artifact(s)
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request' }}
+    if: github.event_name != 'pull_request'
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -44,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
     - artifacts
-    if: always() && (needs.artifacts.result == 'success' || needs.artifacts.result == 'skipped')
+    if: always() && (contains(fromJSON('["skipped", "success"]'), needs.artifacts.result))
     defaults:
       run:
         working-directory: ./terraform
@@ -70,15 +72,25 @@ jobs:
         aws configure set aws_session_token $AWS_SESSION_TOKEN --profile terraform-state
         unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
     - name: Setup AWS web identity token
-      run: |
-        export AWS_WEB_IDENTITY_TOKEN_FILE=${{ runner.temp }}/aws-web-identity-token
-        echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
-        echo TF_VAR_aws_web_identity_token_file=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
-        curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
+      uses: actions/github-script@v6
+      with:
+        script: |
+          import { promises as fs } from 'fs'
+          import { join } from 'path'
+          const file = join(await fs.mkdtemp(join(process.env.RUNNER_TEMP, 'aws-web-identity-token-')), 'token')
+          await fs.writeFile(file, await core.getIDToken('sts.amazonaws.com'))
+          core.exportVariable('AWS_WEB_IDENTITY_TOKEN_FILE', file)
+          core.exportVariable('TF_VAR_aws_web_identity_token_file', file)
+    # - name: Setup AWS web identity token
+    #   run:
+    #     export AWS_WEB_IDENTITY_TOKEN_FILE=${{ runner.temp }}/aws-web-identity-token
+    #     echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
+    #     echo TF_VAR_aws_web_identity_token_file=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
+    #     curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.4.2
+        terraform_version: 1.4.6
         terraform_wrapper: false
     - name: Create plugin cache dir
       run: mkdir -p $TF_PLUGIN_CACHE_DIR
@@ -97,5 +109,5 @@ jobs:
     - name: Plan
       run: terraform plan -out=${{ runner.temp }}/tfplan
     - name: Apply
-      if: ${{ github.event_name != 'pull_request' }}
+      if: github.event_name != 'pull_request'
       run: terraform apply ${{ runner.temp }}/tfplan

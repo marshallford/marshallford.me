@@ -22,6 +22,10 @@ SHELLCHECK := $(DOCKER_RUN) -v=$(CURDIR):/mnt docker.io/koalaman/shellcheck:v$(S
 YAMLLINT_VERSION ?= 0.23.0
 YAMLLINT := $(DOCKER_RUN) -v=$(CURDIR):/code docker.io/pipelinecomponents/yamllint:$(YAMLLINT_VERSION) yamllint
 
+DARTSASS_VERSION ?= 1.62.0
+DARTSASS_RELEASE := https://github.com/sass/dart-sass-embedded/releases/download/$(DARTSASS_VERSION)/sass_embedded-$(DARTSASS_VERSION)-linux-x64.tar.gz
+DARTSASS ?= ./.bin/dart-sass/$(DARTSASS_VERSION)/dart-sass-embedded
+
 HUGO_VERSION ?= 0.111.3
 HUGO_RELEASE := https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_extended_$(HUGO_VERSION)_Linux-64bit.tar.gz
 HUGO ?= ./.bin/hugo/$(HUGO_VERSION)/hugo
@@ -42,6 +46,13 @@ test: test/lighthouse
 # TODO use lhci from npm/nvm
 test/lighthouse:
 	lhci autorun
+
+bin/dart-sass-embedded $(DARTSASS):
+	mkdir -p $(dir $(DARTSASS))
+	$(eval TMP := $(shell mktemp -d))
+	wget -q $(DARTSASS_RELEASE) -O $(TMP)/$(@F).tar.gz
+	tar -zxvf $(TMP)/$(@F).tar.gz -C $(TMP)
+	cp $(TMP)/sass_embedded/$(@F) $(DARTSASS)
 
 bin/hugo $(HUGO):
 	mkdir -p $(dir $(HUGO))
@@ -76,5 +87,5 @@ eject/github:
 	$(info echo "MAKEFILE_$(v)=$($(v))" >> $$GITHUB_ENV))
 
 .PHONY: lint lint/editorconfig lint/shellcheck lint/yamllint test test/lighthouse \
-				bin/hugo build build/hugo build/docker \
+				bin/dart-sass-embedded bin/hugo build build/hugo build/docker \
 				serve serve/hugo serve/python serve/docker eject/github

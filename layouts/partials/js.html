@@ -1,0 +1,14 @@
+{{ with resources.Get "js/index.js" }}
+  {{ $opts := dict
+    "target" "es2016"
+  }}
+  {{ if hugo.IsProduction }}
+    {{ with . | js.Build (merge $opts (dict "minify" true)) | fingerprint }}
+      <script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
+    {{ end }}
+  {{ else }}
+    {{ with . | js.Build (merge $opts (dict "sourceMap" "external")) }}
+      <script defer src="{{ .RelPermalink }}"></script>
+    {{ end }}
+  {{ end }}
+{{ end }}

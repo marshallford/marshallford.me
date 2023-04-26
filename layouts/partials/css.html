@@ -1,0 +1,23 @@
+{{ $header := partialCached "css-image.html" (dict "Name" "header-blur.jpg") "header" }}
+{{ $bg := partialCached "css-image.html" (dict "Name" "axiom-pattern.png") "bg" }}
+
+{{ $opts := dict
+  "includePaths" (slice "node_modules")
+  "vars" (dict
+    "header_url" $header.RelPermalink
+    "header_gradient" (partialCached "gradient.html" $header $header)
+    "bg_url" $bg.RelPermalink
+  )
+}}
+
+{{ with resources.Get "css/main.scss" }}
+  {{ if hugo.IsProduction }}
+    {{ with . | toCSS $opts | postCSS | fingerprint }}
+      <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+    {{ end }}
+  {{ else }}
+    {{ with . | toCSS (merge $opts (dict "enableSourceMap" true)) }}
+      <link rel="stylesheet" href="{{ .RelPermalink }}">
+    {{ end }}
+  {{ end }}
+{{ end }}

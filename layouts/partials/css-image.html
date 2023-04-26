@@ -1,5 +1,9 @@
+{{ $image := "" }}
+
 {{ with resources.Get (printf "images/%s" .Name) }}
   {{ with .Resize (printf "%s webp q100" ($.Size | default (printf "%dx%d" .Width .Height))) }}
-    <img {{ if $.Lazy | default false }}loading="lazy"{{ end }} src="{{ .RelPermalink }}" alt="{{ $.Alt }}" width="{{ .Width }}" height="{{ .Height }}" >
+    {{ $image = . }}
   {{ end }}
 {{ end }}
+
+{{ return $image }}

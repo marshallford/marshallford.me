@@ -1,4 +1,4 @@
-FROM docker.io/node:18.15.0-bullseye as builder
+FROM docker.io/node:18.16.0-bullseye as builder
 
 ARG HUGO_RELEASE
 RUN wget -q $HUGO_RELEASE -O hugo.tar.gz && tar -xzf hugo.tar.gz && cp hugo /usr/local/bin
@@ -15,7 +15,7 @@ WORKDIR /repo
 RUN git config --global advice.detachedHead false && \
     git clone --depth 1 --branch 5.0.0 https://github.com/h5bp/server-configs-nginx.git .
 
-FROM docker.io/nginxinc/nginx-unprivileged:1.23.3-alpine
+FROM docker.io/nginxinc/nginx-unprivileged:1.23.4-alpine
 
 USER root
 RUN chown -R nginx /etc/nginx /usr/share/nginx

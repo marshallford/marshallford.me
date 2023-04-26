@@ -1,13 +1,13 @@
 terraform {
-  required_version = ">= 1.4.2"
+  required_version = ">= 1.46"
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.57.0"
+      version = "4.63.0"
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "4.59.0"
+      version = "4.64.0"
     }
   }
   backend "s3" {
