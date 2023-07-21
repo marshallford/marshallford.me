@@ -148,7 +148,7 @@ ol li:before {
   }
   .main {
     z-index: 2;
-    max-width: map-get($grid-breakpoints, lg);
+    max-width: map-get($grid-breakpoints, xl);
     padding: 0 1.5rem 0 1.5rem;
     a {
       color: $yellow;
@@ -263,8 +263,8 @@ ol li:before {
     }
     .col-2 {
       flex: 1 0 50%;
-      max-width: map-get($grid-breakpoints, sm);
-      @include media-breakpoint-down(sm) {
+      max-width: map-get($grid-breakpoints, md);
+      @include media-breakpoint-down(md) {
         flex: 1 0 100%;
       }
     }

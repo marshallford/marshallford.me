@@ -1,32 +1,33 @@
 ## About Me
 
-I am a DevOps Engineer & Full Stack Web Developer from the snowy state of Minnesota. I have a wide array of interests in technology thanks to an appetite for learning and a hearty portion of curiosity (see what I did there?).
+I am Platform Engineer with deep expertise in site reliability and DevSecOps principles. My background in Full Stack Web Development provides an engineering-centric perspective when architecting platforms.
 
-### DevOps {{< fa-icon cogs >}}
+### Platform {{< fa-icon cogs >}}
 
-Within the sphere of operations and site reliability I am passionate about:
+My areas of focus include:
 
-1. Adopting container orchestration as a secure and scalable landing zone for workloads
-2. Building versatile developer-first platforms
-3. Innovating with public cloud offerings
+1. Building versatile developer-first platforms with consideration for Day-2 operations
+2. Adopting container orchestration as a secure and scalable landing zone for workloads
+3. Innovating with private and public cloud offerings to solve hybrid/edge business challenges
 4. Embracing GitOps and Infrastructure as Code principles to describe and manage systems
-5. Utilizing CI/CD tooling for transparent, predictable, and reliable builds
+5. Utilizing CI/CD for standardized, reliable, and tested deployments
+6. Incorporating collaborative security best practices from "Code to Cloud"
 
 ### Software Engineering {{< fa-icon wrench >}}
 
-In the web development space I am passionate about:
+Within the web development space I have experience with:
 
-1. Developing intuitive and pragmatic front-ends
-2. Implementing performant and secure back-ends, APIs, and services
-3. Harnessing mature open source platforms for caching and persistence
+1. Developing intuitive and responsive front-ends
+2. Implementing performant and secure APIs
+3. Harnessing mature platforms for caching and data persistence
 
 ### Other Interests {{< fa-icon "solid/star" >}}
 
-* Home automation and self-hosting
-* Contributing to open source
-* Watches (and finding bargains)
-* Hip-Hop
-* Coffee and cocktails, enjoyed separately and responsibly of course
+* Self-hosting, homelabbing, and home automation
+* Contributing to and learning about open source projects
+* Finding bargains (desktop/server hardware, watches, apparel)
+* Coffee and cocktails, enjoyed separately and responsibly
+* Listening to Hip-Hop and R&B
 
 ### Get in Touch {{< fa-icon "solid/comments" >}}
 

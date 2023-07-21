@@ -5,4 +5,4 @@ pills:
   - text: homelab
     icon: dot-circle
 ---
-Routing and firewall functions via pfSense, virtualization platform via Proxmox VE, and storage/backup services provided by TrueNas. Currently a fairly standard setup, but I'm always on the lookout for what's next.
+Routing and firewall functions via pfSense, hardware consists mostly of one-liter PCs, Ubuntu/KVM/Libvirt for virtualization, CoreOS VMs to manage tier-zero services like Hashicorp Vault, storage provided by TrueNas Scale, and an RPI4 running Home Assistant.

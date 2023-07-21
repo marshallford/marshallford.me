@@ -5,7 +5,7 @@ enableRobotsTXT: true
 
 params:
   author: Marshall Ford
-  description: DevOps Engineer & Full Stack Web Developer
+  description: Platform Engineer
 
 disableKinds:
 - section
