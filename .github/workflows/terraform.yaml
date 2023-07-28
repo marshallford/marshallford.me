@@ -79,18 +79,14 @@ jobs:
           const { join } = require('path')
           const file = join(await fs.mkdtemp(join(process.env.RUNNER_TEMP, 'aws-web-identity-token-')), 'token')
           await fs.writeFile(file, await core.getIDToken('sts.amazonaws.com'))
-          core.exportVariable('AWS_WEB_IDENTITY_TOKEN_FILE', file)
-          core.exportVariable('TF_VAR_aws_web_identity_token_file', file)
-    # - name: Setup AWS web identity token
-    #   run:
-    #     export AWS_WEB_IDENTITY_TOKEN_FILE=${{ runner.temp }}/aws-web-identity-token
-    #     echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
-    #     echo TF_VAR_aws_web_identity_token_file=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
-    #     curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
+          ;['AWS_WEB_IDENTITY_TOKEN_FILE', 'TF_VAR_aws_web_identity_token_file'].forEach(x => core.exportVariable(x, file))
+    - name: Extract terraform version
+      id: terraform-version
+      run: echo "result=$(grep -vP '^[\s]?#' .terraform-version)" >> "$GITHUB_OUTPUT"
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.4.6
+        terraform_version: ${{ steps.terraform-version.outputs.result }}
         terraform_wrapper: false
     - name: Create plugin cache dir
       run: mkdir -p $TF_PLUGIN_CACHE_DIR
