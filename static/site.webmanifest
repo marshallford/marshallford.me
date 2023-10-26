@@ -1,6 +1,6 @@
 {
     "name": "Marshall Ford",
-    "short_name": "M Ford",
+    "short_name": "Marshall Ford",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -14,5 +14,5 @@
         }
     ],
     "theme_color": "#1b6538",
-    "background_color": "#4C585C"
+    "background_color": "#1b6538"
 }
