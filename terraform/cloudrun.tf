@@ -1,22 +1,41 @@
+locals {
+  image_tag = one([for t in data.google_artifact_registry_docker_image.latest.tags : t if t != "latest"])
+}
+
+resource "google_service_account" "this" {
+  account_id   = "${local.name}-runtime"
+  display_name = "${var.domain} Cloud Run runtime"
+}
+
 resource "google_cloud_run_v2_service" "this" {
-  name     = replace(data.aws_route53_zone.this.name, ".", "-")
+  name     = local.name
   location = var.google_region
   ingress  = "INGRESS_TRAFFIC_ALL"
 
   template {
+    service_account = google_service_account.this.email
+    timeout         = "30s"
     scaling {
       min_instance_count = 1
       max_instance_count = 2
     }
     containers {
-      image = var.image
-      env {
-        name  = "NGINX_HOST"
-        value = data.aws_route53_zone.this.name
+      image = "${google_artifact_registry_repository.this.registry_uri}/${local.name}:${local.image_tag}"
+      ports {
+        name           = "h2c"
+        container_port = 8080
       }
       env {
-        name  = "REGION"
-        value = var.google_region
+        name  = "SITE_HOST"
+        value = var.domain
+      }
+      resources {
+        cpu_idle          = true
+        startup_cpu_boost = true
+        limits = {
+          cpu    = "1"
+          memory = "512Mi"
+        }
       }
       startup_probe {
         http_get {
@@ -30,18 +49,6 @@ resource "google_cloud_run_v2_service" "this" {
       }
     }
   }
-  # deploy with gcloud run deploy
-  # https://github.com/hashicorp/terraform-provider-google/issues/13410#issuecomment-1404610413
-  # lifecycle {
-  #   ignore_changes = [
-  #     annotations["client.knative.dev/user-image"],
-  #     client,
-  #     client_version,
-  #     template[0].annotations["client.knative.dev/user-image"],
-  #     template[0].revision,
-  #     template[0].containers[0].image,
-  #   ]
-  # }
 }
 
 resource "google_cloud_run_v2_service_iam_binding" "this" {
@@ -54,7 +61,7 @@ resource "google_cloud_run_v2_service_iam_binding" "this" {
 }
 
 resource "google_cloud_run_domain_mapping" "apex" {
-  name     = data.aws_route53_zone.this.name
+  name     = var.domain
   location = google_cloud_run_v2_service.this.location
   metadata {
     namespace = var.google_project
@@ -65,7 +72,7 @@ resource "google_cloud_run_domain_mapping" "apex" {
 }
 
 resource "google_cloud_run_domain_mapping" "www" {
-  name     = "www.${data.aws_route53_zone.this.name}"
+  name     = "www.${var.domain}"
   location = google_cloud_run_v2_service.this.location
   metadata {
     namespace = var.google_project

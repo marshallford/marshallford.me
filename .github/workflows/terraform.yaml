@@ -5,105 +5,88 @@ on: # yamllint disable-line rule:truthy
     branches:
     - main
   pull_request:
-    types:
-    - opened
-    - synchronize
-    - reopened
-    # - edited
     branches:
     - main
 
-permissions:
-  id-token: write
-  contents: read
+permissions: {}
 
-concurrency: terraform-${{ github.event_name != 'pull_request' && 'apply' || 'plan' }}
+concurrency:
+  group: terraform-${{ github.event_name == 'pull_request' && github.ref || 'apply' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  artifacts:
-    name: Create artifact(s)
+  image:
+    name: Publish container image
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      IMAGE: us-central1-docker.pkg.dev/marshallford-marshallford-me/containers/marshallford-me
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
-    - name: Eject Makefile variables
-      run: eval "$(make -q eject/github)"
-    - name: Build and push container image
+      uses: actions/checkout@v7
+    - name: Publish container image
+      id: publish
       uses: ./.github/actions/container-image
-      id: container-image
       with:
         push: true
+        image: ${{ env.IMAGE }}
+        tags: |
+          type=sha,prefix=,suffix=-${{ github.run_attempt }}
+          type=raw,value=latest
+        build-args: HUGO_PARAMS_COMMIT=${{ github.sha }}
+        registry: us-central1-docker.pkg.dev
         registry-username: _json_key
         registry-password: ${{ secrets.GOOGLE_CREDENTIALS }}
-        image: ${{ env.MAKEFILE_IMAGE }}
-        build-args:
-          HUGO_RELEASE=${{ env.MAKEFILE_HUGO_RELEASE }}
-    outputs:
-      image: ${{ fromJSON(steps.container-image.outputs.json).tags[0] }}
   terraform:
     name: Terraform
     runs-on: ubuntu-latest
     needs:
-    - artifacts
-    if: always() && (contains(fromJSON('["skipped", "success"]'), needs.artifacts.result))
+    - image
+    if: ${{ !cancelled() && contains(fromJSON('["skipped", "success"]'), needs.image.result) }}
+    permissions:
+      contents: read
+      id-token: write
     defaults:
       run:
         working-directory: ./terraform
     env:
       TF_IN_AUTOMATION: true
-      TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform/plugin-cache
-      TF_VAR_image: ${{ needs.artifacts.outputs.image }}
-      AWS_DEFAULT_REGION: us-east-1
+      TF_INPUT: false
+      TF_CLI_ARGS_plan: ${{ github.event_name == 'pull_request' && '-lock=false' || '' }}
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # TODO replace with Workload Identity Federation in new project/org
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
     - name: Configure AWS credentials for terraform state
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         role-to-assume: arn:aws:iam::626319225102:role/pipeline-terraform-state
-        aws-region: ${{ env.AWS_DEFAULT_REGION }}
-    - name: Save AWS credentials for terraform state
-      run: |
-        # terraform s3 backend does not support assuming a role with web identity
-        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile terraform-state
-        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile terraform-state
-        aws configure set aws_session_token $AWS_SESSION_TOKEN --profile terraform-state
-        unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
-    - name: Setup AWS web identity token
-      uses: actions/github-script@v6
+        aws-region: us-east-1
+        aws-profile: terraform-state
+    - name: Configure AWS credentials for marshallford.me
+      uses: aws-actions/configure-aws-credentials@v6
       with:
-        script: |
-          const { promises: fs } = require('fs')
-          const { join } = require('path')
-          const file = join(await fs.mkdtemp(join(process.env.RUNNER_TEMP, 'aws-web-identity-token-')), 'token')
-          await fs.writeFile(file, await core.getIDToken('sts.amazonaws.com'))
-          ;['AWS_WEB_IDENTITY_TOKEN_FILE', 'TF_VAR_aws_web_identity_token_file'].forEach(x => core.exportVariable(x, file))
-    - name: Extract terraform version
+        role-to-assume: arn:aws:iam::438616359965:role/pipeline-marshallford-me-iac
+        aws-region: us-east-1
+        aws-profile: marshallford-me
+    - name: Read Terraform version
       id: terraform-version
-      run: echo "result=$(grep -vP '^[\s]?#' .terraform-version)" >> "$GITHUB_OUTPUT"
+      run: echo "version=$(< .terraform-version)" >> "$GITHUB_OUTPUT"
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@v4
       with:
-        terraform_version: ${{ steps.terraform-version.outputs.result }}
+        terraform_version: ${{ steps.terraform-version.outputs.version }}
         terraform_wrapper: false
-    - name: Create plugin cache dir
-      run: mkdir -p $TF_PLUGIN_CACHE_DIR
-    - name: Format
-      run: terraform fmt -recursive -check -diff
-    - name: Restore terraform plugins from cache
-      uses: actions/cache@v3
-      with:
-        path: ${{ env.TF_PLUGIN_CACHE_DIR }}
-        key: ${{ runner.os }}-terraform-${{ hashFiles('terraform/.terraform.lock.hcl') }}
-        restore-keys: ${{ runner.os }}-terraform-
     - name: Init
       run: terraform init
     - name: Validate
       run: terraform validate
     - name: Plan
-      run: terraform plan -out=${{ runner.temp }}/tfplan
+      run: terraform plan -out="$RUNNER_TEMP/tfplan"
     - name: Apply
       if: github.event_name != 'pull_request'
-      run: terraform apply ${{ runner.temp }}/tfplan
+      run: terraform apply "$RUNNER_TEMP/tfplan"

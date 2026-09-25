@@ -2,26 +2,22 @@
   "name": "marshallford.me",
   "version": "1.0.0",
   "description": "Hugo Website",
-  "main": "assets/js/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "private": true,
   "author": "Marshall Ford <inbox@marshallford.me> (https://marshallford.me)",
   "license": "MIT",
   "engines": {
-    "node": ">= 18.16.0",
-    "npm": ">= 9.5.1"
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
-    "bootstrap": "^5.2.3",
-    "html5-boilerplate": "^8.0.0",
-    "smooth-scroll": "^16.1.3"
+    "node": ">= 24.0.0",
+    "npm": ">= 11.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "cssnano": "^6.0.0",
-    "postcss": "^8.4.22",
-    "postcss-cli": "^10.1.0"
+    "@lhci/cli": "0.15.1",
+    "@tailwindcss/cli": "4.3.3",
+    "@tailwindcss/typography": "0.5.20",
+    "hugo-extended": "0.166.0",
+    "tailwindcss": "4.3.3"
+  },
+  "allowScripts": {
+    "hugo-extended": true,
+    "@parcel/watcher": false
   }
 }

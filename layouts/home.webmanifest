@@ -1,0 +1,20 @@
+{{- $src := resources.Get "images/me.jpg" -}}
+{{- $any192 := $src.Resize "192x192 webp" -}}
+{{- $any512 := $src.Resize "512x512 webp" -}}
+{{- $size := 512 -}}
+{{- $safe := math.Round (mul $size 0.8) | int -}}
+{{- $pad := div (sub $size $safe) 2 | int -}}
+{{- $maskable := ($src.Resize (printf "%dx%d webp" $safe $safe)).Filter (images.Padding $pad site.Params.themeColor) -}}
+{{- dict
+  "name" site.Title
+  "short_name" site.Title
+  "description" site.Params.description
+  "start_url" "/"
+  "display" "standalone"
+  "theme_color" site.Params.themeColor
+  "background_color" site.Params.themeColor
+  "icons" (slice
+    (dict "src" $any192.RelPermalink "sizes" "192x192" "type" "image/webp" "purpose" "any")
+    (dict "src" $any512.RelPermalink "sizes" "512x512" "type" "image/webp" "purpose" "any")
+    (dict "src" $maskable.RelPermalink "sizes" (printf "%dx%d" $size $size) "type" "image/webp" "purpose" "maskable"))
+  | jsonify (dict "indent" "  ") -}}

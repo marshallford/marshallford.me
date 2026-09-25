@@ -1,0 +1,59 @@
+- title: Self-Managed Kubernetes
+  pills:
+  - text: homelab
+    icon: dot-circle
+  body: >-
+    GitOps-managed k3s cluster deployed with Terraform and Ansible, designed to replicate the UX
+    of managed/cloud k8s offerings. Highly available control plane via HAProxy, Keepalived, and mock
+    AZs. Services utilized include: Cilium for CNI, MetalLB for LBs, Istio for Ingress, Keycloak as
+    an IdP, Prometheus and Grafana for monitoring, Rook Ceph for persistence, and OPA Gatekeeper for
+    policy enforcement.
+
+- title: K8s Mutating Webhook for Defaulting AllowPrivilegeEscalation
+  pills:
+  - text: source
+    link: https://github.com/marshallford/default-allow-privilege-escalation
+    icon: git-alt
+  body: >-
+    Written in Go and published as a container image. GitHub Actions is used for CI/CD. Project
+    includes tests, documentation, and a full-featured Makefile for transparent builds/releases.
+    Supports multiple installation methods.
+
+- title: Home Infrastructure
+  pills:
+  - text: homelab
+    icon: dot-circle
+  body: >-
+    Routing and firewall functions via pfSense. Hardware is mostly one-liter PCs, with
+    Ubuntu/KVM/Libvirt for virtualization, CoreOS VMs for tier-zero services like HashiCorp Vault,
+    storage from TrueNAS SCALE, and an RPi4 running Home Assistant.
+
+- title: Personal Website
+  pills:
+  - text: source
+    link: https://github.com/marshallford/marshallford.me
+    icon: git-alt
+  body: >-
+    This very website. Rendered with Hugo and styled with Tailwind CSS. Pages are precompressed with
+    Brotli and served by Caddy from a reproducible, signed container image with an SBOM. Deployed to
+    GCP Cloud Run with Terraform. GitHub Actions is used for CI/CD, including Lighthouse audits and
+    security scans.
+
+- title: Speedtest Container Image
+  pills:
+  - text: source
+    link: https://github.com/marshallford/speedtest-cli
+    icon: git-alt
+  body: >-
+    The Speedtest C++ CLI tool published as a container image. Cirrus CI is used for CI/CD. The
+    structured JSON output could be passed to Prometheus via the Grok exporter as a useful metric
+    for network health.
+
+- title: Reverse Geocoder
+  pills:
+  - text: source
+    link: https://github.com/marshallford/reverse-geocoder
+    icon: git-alt
+  body: >-
+    A RESTful web service for reverse geocoding. Supports fall-through providers, caching, multiple
+    provider types, and more! Built with Node.js and Redis.

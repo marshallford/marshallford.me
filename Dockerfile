@@ -1,36 +1,18 @@
-FROM docker.io/node:18.16.0-bullseye as builder
-
-ARG HUGO_RELEASE
-RUN wget -q $HUGO_RELEASE -O hugo.tar.gz && tar -xzf hugo.tar.gz && cp hugo /usr/local/bin
+FROM docker.io/node:24.21.0-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 AS builder
 
 WORKDIR /app
-COPY package*.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 COPY . .
-RUN hugo --minify --cleanDestinationDir --panicOnWarning
+ARG HUGO_PARAMS_COMMIT
+RUN npx hugo --minify --cleanDestinationDir --panicOnWarning
 
-FROM docker.io/alpine/git:2.36.3 as h5bp-server-configs-nginx
+RUN node scripts/precompress.mjs public
 
-WORKDIR /repo
-RUN git config --global advice.detachedHead false && \
-    git clone --depth 1 --branch 5.0.0 https://github.com/h5bp/server-configs-nginx.git .
+FROM docker.io/caddy:2.11.4-alpine@sha256:de23def33b17fb5d1290b0f6c2add1d70780e52341896c00a4c8a2a2fe9d355e
 
-FROM docker.io/nginxinc/nginx-unprivileged:1.23.4-alpine
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from=builder /app/public /srv
 
-USER root
-RUN chown -R nginx /etc/nginx /usr/share/nginx
-USER nginx
-
-WORKDIR /etc/nginx
-RUN rm -rf *
-COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/h5bp h5bp
-COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/conf.d/no-ssl.default.conf conf.d/
-COPY --chown=nginx:nginx --from=h5bp-server-configs-nginx /repo/nginx.conf /repo/mime.types ./
-RUN sed -i -e "s/user www-data;//g" -e "s/\/var\/run\/nginx.pid/\/tmp\/nginx.pid/g" nginx.conf
-COPY --chown=nginx:nginx default.conf.template templates/
-COPY --chown=nginx:nginx runtime-config.sh /docker-entrypoint.d/
-COPY --chown=nginx:nginx --from=builder /app/public /usr/share/nginx/html
-
-ENV NGINX_HOST=localhost
-ENV PORT=8080
-ENV REGION=local-container
+ENV XDG_CONFIG_HOME=/tmp XDG_DATA_HOME=/tmp
+USER 1000:1000

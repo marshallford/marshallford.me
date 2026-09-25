@@ -1,0 +1,7 @@
+{{ $icon := partial "icon.html" (dict "name" (.icon | default "link") "class" "size-3") }}
+{{ $class := "flex items-center gap-2 rounded-xs border-2 px-2 py-0.5 font-display text-sm font-bold tracking-wide uppercase" }}
+{{ if .link }}
+  <a href="{{ .link }}" class="{{ $class }} border-amber-200 text-amber-200 transition-colors hover:bg-amber-200 hover:text-mist-800">{{ .text }} {{ $icon }}</a>
+{{ else }}
+  <span class="{{ $class }} border-mist-400 text-mist-400">{{ .text }} {{ $icon }}</span>
+{{ end }}
