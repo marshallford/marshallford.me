@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "**/layouts/**/*.webmanifest": "gotmpl"
+  },
+  "css.validate": false
+}

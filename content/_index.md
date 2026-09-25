@@ -1,9 +1,6 @@
-## About Me
+I am a Platform Engineer with deep expertise in site reliability and DevSecOps principles. My background in Full Stack Web Development provides an engineering-centric perspective when architecting platforms.
 
-I am Platform Engineer with deep expertise in site reliability and DevSecOps principles. My background in Full Stack Web Development provides an engineering-centric perspective when architecting platforms.
-
-### Platform {{< fa-icon cogs >}}
-
+### Platform {{< icon cogs >}} {#platform}
 My areas of focus include:
 
 1. Building versatile developer-first platforms with consideration for Day-2 operations
@@ -13,22 +10,19 @@ My areas of focus include:
 5. Utilizing CI/CD for standardized, reliable, and tested deployments
 6. Incorporating collaborative security best practices from "Code to Cloud"
 
-### Software Engineering {{< fa-icon wrench >}}
-
-Within the web development space I have experience with:
+### Software Engineering {{< icon wrench >}} {#software-engineering}
+Within the web development space, I have experience with:
 
 1. Developing intuitive and responsive front-ends
 2. Implementing performant and secure APIs
 3. Harnessing mature platforms for caching and data persistence
 
-### Other Interests {{< fa-icon "solid/star" >}}
-
+### Other Interests {{< icon star >}} {#other-interests}
 * Self-hosting, homelabbing, and home automation
 * Contributing to and learning about open source projects
 * Finding bargains (desktop/server hardware, watches, apparel)
 * Coffee and cocktails, enjoyed separately and responsibly
 * Listening to Hip-Hop and R&B
 
-### Get in Touch {{< fa-icon "solid/comments" >}}
-
+### Get in Touch {{< icon comments >}} {#get-in-touch}
 Have a question for me? Looking for my resume? Shoot me an [email](mailto:inbox@marshallford.me). Looking forward to hearing from you!

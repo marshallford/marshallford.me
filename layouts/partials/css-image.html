@@ -1,9 +1,0 @@
-{{ $image := "" }}
-
-{{ with resources.Get (printf "images/%s" .Name) }}
-  {{ with .Resize (printf "%s webp q100" ($.Size | default (printf "%dx%d" .Width .Height))) }}
-    {{ $image = . }}
-  {{ end }}
-{{ end }}
-
-{{ return $image }}

@@ -3,6 +3,11 @@ variable "repository" {
   nullable = false
 }
 
+variable "domain" {
+  type     = string
+  nullable = false
+}
+
 variable "google_region" {
   type     = string
   nullable = false
@@ -30,22 +35,4 @@ variable "aws_default_tags" {
   type     = map(string)
   nullable = false
   default  = {}
-}
-
-variable "aws_account_id" {
-  type     = string
-  nullable = false
-}
-
-variable "aws_web_identity_token_file" {
-  type      = string
-  nullable  = true
-  sensitive = true
-  default   = null
-}
-
-variable "image" {
-  type     = string
-  nullable = false
-  default  = "us-docker.pkg.dev/cloudrun/container/hello"
 }

@@ -1,4 +1,12 @@
-.bin/
-node_modules/
-public/
-terraform/
+*
+!assets
+!content
+!data
+!layouts
+!scripts
+!static
+!Caddyfile
+!hugo.yaml
+!package.json
+!package-lock.json
+!.npmrc

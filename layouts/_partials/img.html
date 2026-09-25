@@ -1,0 +1,33 @@
+{{ $img := .Resource }}
+{{ if not $img }}{{ errorf "img.html: Resource is required" }}{{ end }}
+{{ if not (isset . "Alt") }}{{ errorf "img.html: Alt is required; pass \"\" for decorative images" }}{{ end }}
+
+{{ $srcset := slice }}
+{{ $src := "" }}
+{{ with .Width }}
+  {{ range $n := slice 1 2 3 }}
+    {{ $w := mul $.Width $n }}
+    {{ if le $w $img.Width }}
+      {{ $r := $img.Resize (printf "%dx avif" $w) }}
+      {{ $srcset = $srcset | append (printf "%s %dx" $r.RelPermalink $n) }}
+      {{ if not $src }}{{ $src = $r }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ else }}
+  {{ range $w := slice 640 960 1280 1920 2560 }}
+    {{ if le $w $img.Width }}
+      {{ $src = $img.Resize (printf "%dx avif" $w) }}
+      {{ $srcset = $srcset | append (printf "%s %dw" $src.RelPermalink $w) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+<img
+  src="{{ $src.RelPermalink }}"
+  srcset="{{ delimit $srcset ", " }}"
+  {{- with .Sizes }} sizes="{{ . }}"{{ end }}
+  width="{{ $src.Width }}"
+  height="{{ $src.Height }}"
+  alt="{{ .Alt }}"
+  {{- if .Eager }} fetchpriority="high"{{ else }} loading="lazy"{{ end }}
+  {{- with .Class }} class="{{ . }}"{{ end }}>

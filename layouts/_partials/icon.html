@@ -1,0 +1,1 @@
+{{ with resources.Get (printf "icons/%s.svg" .name) }}{{ replace .Content "<svg " (printf `<svg class="%s" ` $.class) 1 | safeHTML }}{{ end }}

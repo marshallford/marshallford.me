@@ -1,5 +1,0 @@
-{{ $colors := .Colors }}
-{{ if (lt ($colors | len) 2) }}
-  {{ $colors = $colors | append "#000000" }}
-{{ end }}
-{{ return delimit $colors ", " }}

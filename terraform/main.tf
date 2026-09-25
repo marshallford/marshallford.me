@@ -1,59 +1,48 @@
 terraform {
-  required_version = ">= 1.4.6"
+  required_version = ">= 1.16.0"
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.63.0"
+      version = "8.3.0"
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "4.64.0"
+      version = "6.66.0"
     }
   }
   backend "s3" {
-    bucket         = "mford-shared-infrastructure-prod-terraform-state"
-    key            = "marshallford-me"
-    dynamodb_table = "terraform-state"
-    profile        = "terraform-state"
-    region         = "us-east-1"
+    bucket       = "mford-shared-infrastructure-prod-terraform-state"
+    key          = "marshallford-me"
+    use_lockfile = true
+    profile      = "terraform-state"
+    region       = "us-east-1"
   }
 }
 
 locals {
   terraform_config = "marshallford-me"
+  name             = replace(var.domain, ".", "-")
   google_default_labels = merge(var.google_default_labels, {
-    Repository      = var.repository
-    Automation      = "terraform"
-    TerraformConfig = local.terraform_config
+    repository       = replace(replace(var.repository, "/", "_"), ".", "-")
+    automation       = "terraform"
+    terraform-config = local.terraform_config
   })
   aws_default_tags = merge(var.aws_default_tags, {
     Repository      = var.repository
     Automation      = "terraform"
     TerraformConfig = local.terraform_config
   })
-  aws_role_arn = "arn:aws:iam::${var.aws_account_id}:role/pipeline-${local.terraform_config}-iac"
 }
 
 provider "google" {
-  region  = var.google_region
-  project = var.google_project
+  region         = var.google_region
+  project        = var.google_project
+  default_labels = local.google_default_labels
 }
 
 provider "aws" {
-  dynamic "assume_role" {
-    for_each = var.aws_web_identity_token_file == null ? [1] : []
-    content {
-      role_arn = local.aws_role_arn
-    }
-  }
-  dynamic "assume_role_with_web_identity" {
-    for_each = var.aws_web_identity_token_file != null ? [1] : []
-    content {
-      role_arn                = local.aws_role_arn
-      web_identity_token_file = var.aws_web_identity_token_file
-    }
-  }
-  region = var.aws_region
+  profile = "marshallford-me"
+  region  = var.aws_region
   default_tags {
     tags = local.aws_default_tags
   }

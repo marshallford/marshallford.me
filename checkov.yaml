@@ -4,6 +4,7 @@ framework:
 - all
 quiet: true
 skip-check:
-- CKV2_AWS_23
-- CKV_DOCKER_2
+- CKV2_AWS_23 # the A record points at Cloud Run's IPs
+- CKV_DOCKER_2 # cloud run ignores HEALTHCHECK
+- CKV_GCP_84 # CMEK on a registry of public images buys nothing
 skip-download: true

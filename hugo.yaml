@@ -1,32 +1,71 @@
+baseURL: https://marshallford.me/
 title: Marshall Ford
-languageCode: en-us
-enableGitInfo: true
+locale: en-US
 enableRobotsTXT: true
+disableHugoGeneratorInject: true
 
 params:
-  author: Marshall Ford
-  description: Platform Engineer
+  tagline: Platform Engineer  # second half of the hero headline and the title
+  description: Platform engineer with deep expertise in site reliability and DevSecOps.
+  themeColor: '#22292b' # sRGB of Tailwind's mist-800, unresolvable outside CSS
+  social:
+  - name: GitHub
+    link: https://github.com/marshallford
+    icon: github
+  - name: Instagram
+    link: https://www.instagram.com/marshallbford
+    icon: instagram
+  - name: LinkedIn
+    link: https://www.linkedin.com/in/marshallbford
+    icon: linkedin-in
+  - name: Email
+    link: mailto:inbox@marshallford.me
+    icon: inbox
 
 disableKinds:
-- section
+- sitemap
 - taxonomy
-- taxonomyTerm
-- sitemap # TODO: "project" isn't a real archetype - find a way to exclude
-- RSS # TODO: "project" isn't a real archetype - find a way to exclude
+- term
+- RSS
 
-markup:
-  goldmark:
-    renderer:
-      unsafe: true # for icon shortcode
+outputs:
+  home:
+  - html
+  - webappmanifest
 
-# minify handled by postcss and esbuild
 minify:
-  disableCSS: false
-  disableJS: false
+  disableCSS: true
+
+imaging:
+  resampleFilter: lanczos
+  avif:
+    quality: 75
+    hint: photo
+
+build:
+  buildStats:
+    enable: true
+  cachebusters:
+  - source: assets/notwatching/hugo_stats\.json
+    target: css
+  - source: assets/.*\.css
+    target: css
+
+security:
+  exec:
+    allow:
+    - ^node$
+    - ^tailwindcss$
+  node:
+    permissions:
+      allowRead:
+      - node_modules
+      - hugo_stats.json
 
 module:
   mounts:
   - source: assets
     target: assets
-  - source: node_modules/@fortawesome/fontawesome-free/svgs
-    target: assets/images/fontawesome-svgs
+  - source: hugo_stats.json
+    target: assets/notwatching/hugo_stats.json
+    disableWatch: true

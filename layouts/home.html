@@ -1,0 +1,73 @@
+{{ define "main" }}
+{{ $hero := resources.Get "images/header.jpg" | images.Filter
+  (images.Process "fill 2560x1206 center")
+  (images.GaussianBlur 5)
+  (images.Gamma 0.72)
+  (images.Saturation 5)
+  (images.ColorBalance 0 0 -20) }}
+{{ $lqip := $hero.Resize "32x avif" }}
+<header
+  class="relative isolate flex min-h-svh flex-col"
+  style="background: center/cover url('data:image/avif;base64,{{ $lqip.Content | base64Encode }}')">
+  {{ partial "img.html" (dict
+    "Resource" $hero
+    "Alt" ""
+    "Sizes" "100vw"
+    "Eager" true
+    "Class" "absolute inset-0 -z-10 size-full object-cover") }}
+
+  <ul class="flex justify-end gap-5 bg-mist-800/60 px-5 py-2" aria-label="Social links">
+    {{ range site.Params.social }}
+      <li>
+        <a href="{{ .link }}" aria-label="{{ .name }}" class="text-mist-50/60 transition-colors hover:text-mist-50">
+          {{ partial "icon.html" (dict "name" .icon "class" "size-8") }}
+        </a>
+      </li>
+    {{ end }}
+  </ul>
+
+  <div class="my-auto flex flex-col items-center gap-8 px-5 py-14 text-center">
+    <h1 class="text-3xl/snug font-bold text-balance text-mist-50 sm:text-5xl/snug">
+      {{ site.Title }} — {{ site.Params.tagline }}
+    </h1>
+    <a href="#fold" class="flex items-center gap-3 rounded-xs bg-green-800 px-10 py-4 text-xl font-bold text-mist-50 transition-colors hover:bg-green-900 sm:gap-4 sm:text-3xl">
+      About Me {{ partial "icon.html" (dict "name" "chevron-down" "class" "size-5 sm:size-6") }}
+    </a>
+  </div>
+</header>
+
+<div id="fold" class="border-t-4 border-mist-700 bg-axiom">
+  <main class="mx-auto grid max-w-7xl gap-14 px-5 py-14 lg:grid-cols-2">
+    <section class="mx-auto flex max-w-prose flex-col gap-6" aria-labelledby="about-me">
+      <h2 id="about-me" class="border-b-4 border-mist-700 pb-2 text-3xl font-bold tracking-wide text-mist-50 uppercase">About Me</h2>
+      {{ partial "img.html" (dict
+        "Resource" (resources.Get "images/me.jpg")
+        "Alt" site.Title
+        "Width" 168
+        "Class" "mx-auto rounded-full border-4 border-mist-700") }}
+      <div class="prose prose-invert prose-site">{{ .Content }}</div>
+    </section>
+
+    <section class="mx-auto flex max-w-prose flex-col gap-6" aria-labelledby="curated-projects">
+      <h2 id="curated-projects" class="border-b-4 border-mist-700 pb-2 text-3xl font-bold tracking-wide text-mist-50 uppercase">Curated Projects</h2>
+      <ul class="divide-y divide-mist-700">
+        {{ range hugo.Data.projects }}
+        <li class="py-5">
+          <article class="flex flex-col gap-2">
+            <header class="flex flex-wrap items-center gap-2">
+              <h3 class="text-xl font-semibold text-mist-50">{{ .title }}</h3>
+              {{ range .pills }}{{ partial "pill.html" . }}{{ end }}
+            </header>
+            <div class="prose prose-invert prose-site">{{ $.RenderString (dict "display" "block") .body }}</div>
+          </article>
+        </li>
+        {{ end }}
+      </ul>
+    </section>
+  </main>
+
+  <footer class="px-5 py-8 text-center text-sm text-mist-400">
+    {{ site.Title }} · Powered by Hugo{{ with site.Params.commit }} · Build {{ substr . 0 7 }}{{ end }}
+  </footer>
+</div>
+{{ end }}
