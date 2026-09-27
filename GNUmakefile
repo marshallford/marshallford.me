@@ -56,9 +56,16 @@ VERIFY_SBOM_PREDICATE_TYPE ?= https://spdx.dev/Document/v2.3
 TERRAFORM ?= terraform
 NPM ?= npm
 NODE ?= node
-export HUGO_PARAMS_COMMIT ?= $(shell git rev-parse HEAD)
 HUGO := ./node_modules/.bin/hugo
 LHCI := ./node_modules/.bin/lhci
+
+SOURCE_DATE_EPOCH ?= $(shell git log -1 --pretty=%ct)
+SOURCE_DATE_EPOCH := $(SOURCE_DATE_EPOCH)
+HUGO_PARAMS_COMMIT ?= $(shell git rev-parse HEAD)
+HUGO_PARAMS_COMMIT := $(HUGO_PARAMS_COMMIT)
+HUGO_PARAMS_COMMITTIME ?= $(SOURCE_DATE_EPOCH)
+HUGO_PARAMS_COMMITTIME := $(HUGO_PARAMS_COMMITTIME)
+export SOURCE_DATE_EPOCH HUGO_PARAMS_COMMIT HUGO_PARAMS_COMMITTIME
 
 .PHONY: pull pull/editorconfig pull/yamllint pull/checkov pull/trivy pull/imagemagick
 pull: pull/editorconfig pull/yamllint pull/checkov pull/trivy pull/imagemagick
@@ -110,7 +117,7 @@ build/compress: build/hugo
 	$(NODE) scripts/precompress.mjs public
 
 build/container:
-	$(CONTAINER_RUNTIME) build --pull --build-arg=HUGO_PARAMS_COMMIT=$(HUGO_PARAMS_COMMIT) . -t $(IMAGE_WITH_TAG)
+	$(CONTAINER_RUNTIME) build --pull --build-arg=SOURCE_DATE_EPOCH --build-arg=HUGO_PARAMS_COMMIT . -t $(IMAGE_WITH_TAG)
 
 build/favicon:
 	$(IMAGEMAGICK) -size 512x512 xc:black -fill white -draw "circle 255.5,255.5 255.5,0" \

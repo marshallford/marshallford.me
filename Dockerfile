@@ -4,7 +4,9 @@ WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 COPY . .
+ARG SOURCE_DATE_EPOCH
 ARG HUGO_PARAMS_COMMIT
+ENV HUGO_PARAMS_COMMITTIME=$SOURCE_DATE_EPOCH
 RUN npx hugo --minify --cleanDestinationDir --panicOnWarning
 
 RUN node scripts/precompress.mjs public

@@ -1,6 +1,6 @@
 {{ $img := .Resource }}
-{{ if not $img }}{{ errorf "img.html: Resource is required" }}{{ end }}
-{{ if not (isset . "Alt") }}{{ errorf "img.html: Alt is required; pass \"\" for decorative images" }}{{ end }}
+{{ if not $img }}{{ errorf "%s: missing Resource" templates.Current.Name }}{{ end }}
+{{ if not (isset . "Alt") }}{{ errorf "%s: missing Alt; pass \"\" for decorative images" templates.Current.Name }}{{ end }}
 
 {{ $srcset := slice }}
 {{ $src := "" }}

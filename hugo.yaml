@@ -8,6 +8,8 @@ params:
   tagline: Platform Engineer  # second half of the hero headline and the title
   description: Platform engineer with deep expertise in site reliability and DevSecOps.
   themeColor: '#22292b' # sRGB of Tailwind's mist-800, unresolvable outside CSS
+  repository: https://github.com/marshallford/marshallford.me
+  email: &email mailto:inbox@marshallford.me
   social:
   - name: GitHub
     link: https://github.com/marshallford
@@ -19,7 +21,7 @@ params:
     link: https://www.linkedin.com/in/marshallbford
     icon: linkedin-in
   - name: Email
-    link: mailto:inbox@marshallford.me
+    link: *email
     icon: inbox
 
 disableKinds:
@@ -32,6 +34,24 @@ outputs:
   home:
   - html
   - webappmanifest
+  - llms
+  - security
+  - humans
+
+outputFormats:
+  llms:
+    baseName: llms
+    mediaType: text/plain
+    isPlainText: true
+  security:
+    baseName: security
+    path: .well-known
+    mediaType: text/plain
+    isPlainText: true
+  humans:
+    baseName: humans
+    mediaType: text/plain
+    isPlainText: true
 
 minify:
   disableCSS: true

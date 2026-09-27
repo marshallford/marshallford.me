@@ -9,6 +9,7 @@
   "name" site.Title
   "short_name" site.Title
   "description" site.Params.description
+  "id" "/"
   "start_url" "/"
   "display" "standalone"
   "theme_color" site.Params.themeColor
