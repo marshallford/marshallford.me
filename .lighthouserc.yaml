@@ -8,8 +8,8 @@ ci:
   assert:
     assertions:
       categories:performance:
-      - warn
-      - minScore: 1
+      - error
+      - minScore: 0.98
       categories:accessibility:
       - error
       - minScore: 1
@@ -19,3 +19,6 @@ ci:
       categories:seo:
       - error
       - minScore: 1
+      resource-summary:third-party:count:
+      - error
+      - maxNumericValue: 0

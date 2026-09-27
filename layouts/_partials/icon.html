@@ -1,1 +1,1 @@
-{{ with resources.Get (printf "icons/%s.svg" .name) }}{{ replace .Content "<svg " (printf `<svg class="%s" ` $.class) 1 | safeHTML }}{{ end }}
+{{ with resources.Get (printf "icons/%s.svg" .name) }}{{ replace .Content "<svg " (printf `<svg class="%s" ` $.class) 1 | safeHTML }}{{ else }}{{ errorf "%s: no icon named %q in assets/icons" templates.Current.Name .name }}{{ end }}

@@ -1,0 +1,5 @@
+{{- $expires := (partial "commit-date.html" .).AddDate 0 11 0 -}}
+Contact: {{ site.Params.email }}
+Expires: {{ $expires.UTC.Format "2006-01-02T15:04:05Z07:00" }}
+Canonical: {{ (.OutputFormats.Get "security").Permalink }}
+Preferred-Languages: {{ site.Language.Lang }}

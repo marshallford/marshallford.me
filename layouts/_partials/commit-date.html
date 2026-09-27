@@ -1,0 +1,3 @@
+{{ $epoch := site.Params.committime }}
+{{ if not $epoch }}{{ errorf "%s: missing HUGO_PARAMS_COMMITTIME" templates.Current.Name }}{{ end }}
+{{ return time.AsTime (int $epoch) }}

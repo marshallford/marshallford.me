@@ -1,0 +1,7 @@
+/* TEAM */
+Developer: {{ site.Title }}
+Source: {{ site.Params.repository }}
+
+/* SITE */
+Last update: {{ (partial "commit-date.html" .).UTC | time.Format ":date_full" }}
+Stack: Hugo, Tailwind CSS, Caddy, Cloud Run, Terraform, GitHub Actions

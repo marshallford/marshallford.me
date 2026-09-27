@@ -67,7 +67,7 @@
   </main>
 
   <footer class="px-5 py-8 text-center text-sm text-mist-400">
-    {{ site.Title }} · Powered by Hugo{{ with site.Params.commit }} · Build {{ substr . 0 7 }}{{ end }}
+    {{ site.Title }} · Powered by Hugo{{ with site.Params.commit }} · Build {{ substr . 0 7 }}{{ else }}{{ errorf "%s: missing HUGO_PARAMS_COMMIT" templates.Current.Name }}{{ end }}
   </footer>
 </div>
 {{ end }}

@@ -1,0 +1,12 @@
+# {{ site.Title }}
+
+> {{ site.Params.description }}
+
+## About Me
+
+{{ .RenderShortcodes | replaceRE `(?m)^(#+ .*?) \{[^}]*\}$` "$1" | strings.TrimSpace }}
+
+## Links
+{{ range site.Params.social }}
+- [{{ .name }}]({{ .link }})
+{{- end }}
