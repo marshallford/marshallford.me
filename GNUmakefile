@@ -40,7 +40,7 @@ IMAGEMAGICK := $(CONTAINER_RUN) -v=$(CURDIR):/imgs:z $(IMAGEMAGICK_IMAGE)
 TRIVY_VERSION ?= 0.74.0
 TRIVY_IMAGE ?= docker.io/aquasec/trivy:$(TRIVY_VERSION)
 TRIVY_VOLUME := trivy-cache
-TRIVY := $(CONTAINER_RUN) -v=$(CURDIR)/$(CACHE_DIR):/scan:$(CONTAINER_MOUNT_FLAGS) -v=$(TRIVY_VOLUME):/root/.cache/trivy $(TRIVY_IMAGE)
+TRIVY := $(CONTAINER_RUN) -v=$(CURDIR):/scan:$(CONTAINER_MOUNT_FLAGS) -w=/scan -v=$(TRIVY_VOLUME):/root/.cache/trivy $(TRIVY_IMAGE)
 
 GITHUB_REPOSITORY := marshallford/marshallford.me
 PUBLISH_WORKFLOW := .github/workflows/terraform.yaml
@@ -149,7 +149,7 @@ scan/checkov:
 scan/trivy: build/container
 	mkdir -p $(CACHE_DIR)
 	$(CONTAINER_RUNTIME) save $(IMAGE_WITH_TAG) -o $(IMAGE_TAR)
-	$(TRIVY) image --input /scan/$(notdir $(IMAGE_TAR))
+	$(TRIVY) image --config trivy.yaml --input $(IMAGE_TAR)
 
 .PHONY: verify verify/image verify/sbom
 verify: verify/image verify/sbom
