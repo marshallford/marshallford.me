@@ -13,12 +13,10 @@ Personal portfolio/about-me site.
 
 ## Highlights
 
-* **Reproducible, signed images:** builds pinned to the commit timestamp, keyless cosign signatures, and SLSA provenance plus SPDX SBOM attestations; `make verify` checks all three
-* **Precompressed delivery:** Brotli at max quality, served as-is by [Caddy](Caddyfile), with year-long `immutable` caching on fingerprinted assets
-* **Lean frontend:** no third-party requests (enforced by CSP), Tailwind CSS generated from only the classes Hugo emits, a preloaded self-hosted font, and a hero image that loads over an inlined blur placeholder
-* **Generated standard files:** `security.txt`, `llms.txt` and `humans.txt`, with the `security.txt` expiry derived from the last commit
-* **Terraform across two clouds:** deploys look up the latest published image, so the workflow passes nothing to Terraform
-* **Keyless AWS access:** GitHub OIDC, so the same config plans and applies from a laptop or a runner
+* **Reproducible, signed images:** builds pinned to the commit timestamp, [keyless cosign signatures](.github/actions/container-image/action.yaml), and SLSA provenance plus SPDX SBOM attestations; `make verify` checks all three
+* **Precompressed delivery:** [Brotli at max quality](scripts/precompress.mjs), served as-is by Caddy, with year-long `immutable` caching on fingerprinted assets
+* **Lean frontend:** no third-party requests (enforced by CSP), [Tailwind CSS generated from only the classes Hugo emits](assets/css/main.css), a preloaded self-hosted font, and a hero image that loads over an inlined blur placeholder
+* **Generated standard files:** `security.txt`, `llms.txt`, `humans.txt` and `manifest.webmanifest` from [Hugo templates](layouts/), dated from the last commit instead of the build clock
 * **One definition of every check:** [CI](.github/workflows/ci.yaml) runs the same `make` targets as local development
 
 ## Credits

@@ -1,0 +1,38 @@
+x-caddy: &caddy
+  paths:
+  - usr/bin/caddy
+  statement: Go stdlib (go1.26.3) and module deps in the caddy 2.11.4 binary; waiting on an upstream release
+  expired_at: 2026-12-31
+vulnerabilities:
+- <<: *caddy
+  id: CVE-2026-27145
+- <<: *caddy
+  id: CVE-2026-33818
+- <<: *caddy
+  id: CVE-2026-39821
+- <<: *caddy
+  id: CVE-2026-39822
+- <<: *caddy
+  id: CVE-2026-42504
+- <<: *caddy
+  id: CVE-2026-46600
+- <<: *caddy
+  id: CVE-2026-56852
+- <<: *caddy
+  id: CVE-2026-56853
+- <<: *caddy
+  id: CVE-2026-56854
+- <<: *caddy
+  id: CVE-2026-56858
+- <<: *caddy
+  id: CVE-2026-56859
+- <<: *caddy
+  id: CVE-2026-56860
+- <<: *caddy
+  id: CVE-2026-56862
+- <<: *caddy
+  id: CVE-2026-84304
+- <<: *caddy
+  id: CVE-2026-84445
+- <<: *caddy
+  id: GHSA-hrxh-6v49-42gf
