@@ -1,32 +1,61 @@
-- title: Self-Managed Kubernetes
-  pills:
-  - text: homelab
-    icon: dot-circle
-  body: >-
-    GitOps-managed k3s cluster deployed with Terraform and Ansible, designed to replicate the UX
-    of managed/cloud k8s offerings. Highly available control plane via HAProxy, Keepalived, and mock
-    AZs. Services utilized include: Cilium for CNI, MetalLB for LBs, Istio for Ingress, Keycloak as
-    an IdP, Prometheus and Grafana for monitoring, Rook Ceph for persistence, and OPA Gatekeeper for
-    policy enforcement.
-
-- title: K8s Mutating Webhook for Defaulting AllowPrivilegeEscalation
+- title: Terraform Provider for pfSense
   pills:
   - text: source
-    link: https://github.com/marshallford/default-allow-privilege-escalation
+    link: https://github.com/marshallford/terraform-provider-pfsense
     icon: git-alt
+  - text: registry
+    link: https://registry.terraform.io/providers/marshallford/pfsense/latest/docs
+    icon: link
   body: >-
-    Written in Go and published as a container image. GitHub Actions is used for CI/CD. Project
-    includes tests, documentation, and a full-featured Makefile for transparent builds/releases.
-    Supports multiple installation methods.
+    Configure pfSense firewall/router devices with Terraform. Written in Go with the Terraform
+    Plugin Framework.
 
-- title: Home Infrastructure
+- title: Terraform Provider for Ansible
+  pills:
+  - text: source
+    link: https://github.com/marshallford/terraform-provider-ansible
+    icon: git-alt
+  - text: registry
+    link: https://registry.terraform.io/providers/marshallford/ansible/latest/docs
+    icon: link
+  body: >-
+    Run Ansible playbooks using Terraform, without the local-exec provisioner. Supports execution
+    environments and jq queries against playbook artifacts, among other features. Written in Go,
+    with acceptance tests and published coverage reports. GitHub Actions is used for CI/CD.
+
+- title: K3s Cluster Terraform Module
+  pills:
+  - text: source
+    link: https://github.com/marshallford/terraform-ansible-k3s
+    icon: git-alt
+  - text: registry
+    link: https://registry.terraform.io/modules/marshallford/k3s/ansible/latest
+    icon: link
+  body: >-
+    Provision and operate a Kubernetes cluster with the convenience of a managed offering. Targets
+    Fedora CoreOS, with SELinux support and Butane submodules for machine configuration. Highly
+    available control plane via HAProxy and Keepalived. Supports air-gapped installs, upgrades, and
+    certificate rotation. Built on my Ansible provider and used for my homelab clusters.
+
+- title: Home Automation
   pills:
   - text: homelab
     icon: dot-circle
   body: >-
-    Routing and firewall functions via pfSense. Hardware is mostly one-liter PCs, with
-    Ubuntu/KVM/Libvirt for virtualization, CoreOS VMs for tier-zero services like HashiCorp Vault,
-    storage from TrueNAS SCALE, and an RPi4 running Home Assistant.
+    Fedora CoreOS VM provisioned on Proxmox with Terraform and configured with Ansible. All
+    workloads run as Podman Quadlets. Zigbee2MQTT bridges devices from an SLZB-MR2 network-attached
+    coordinator to Home Assistant over Mosquitto. Caddy runs rootless with systemd socket activation
+    and terminates HTTPS with certificates from lego.
+
+- title: Cooling a Closet Homelab
+  pills:
+  - text: source
+    link: https://github.com/marshallford/closet-homelab-telemetry
+    icon: git-alt
+  body: >-
+    Measured whether two USB fans actually helped. Uses an OpenTelemetry Collector, Prometheus, and
+    Grafana, with dashboards generated from Jsonnet. Scripts mark changes and compare the windows on
+    either side.
 
 - title: Personal Website
   pills:
@@ -36,24 +65,5 @@
   body: >-
     This very website. Rendered with Hugo and styled with Tailwind CSS. Pages are precompressed with
     Brotli and served by Caddy from a reproducible, signed container image with an SBOM. Deployed to
-    GCP Cloud Run with Terraform. GitHub Actions is used for CI/CD, including Lighthouse audits and
-    security scans.
-
-- title: Speedtest Container Image
-  pills:
-  - text: source
-    link: https://github.com/marshallford/speedtest-cli
-    icon: git-alt
-  body: >-
-    The Speedtest C++ CLI tool published as a container image. Cirrus CI is used for CI/CD. The
-    structured JSON output could be passed to Prometheus via the Grok exporter as a useful metric
-    for network health.
-
-- title: Reverse Geocoder
-  pills:
-  - text: source
-    link: https://github.com/marshallford/reverse-geocoder
-    icon: git-alt
-  body: >-
-    A RESTful web service for reverse geocoding. Supports fall-through providers, caching, multiple
-    provider types, and more! Built with Node.js and Redis.
+    GCP Cloud Run with Terraform. CI/CD with GitHub Actions includes Lighthouse audits and security
+    scans.
