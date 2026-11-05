@@ -1,4 +1,4 @@
-FROM docker.io/node:24.21.0-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 AS builder
+FROM docker.io/node:24.22.2-bookworm-slim@sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9 AS builder
 
 WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
@@ -11,7 +11,7 @@ RUN npx hugo --minify --cleanDestinationDir --panicOnWarning
 
 RUN node scripts/precompress.mjs public
 
-FROM docker.io/caddy:2.11.8-alpine@sha256:3db3a09e418f86a8fce8de4bc0026fccd2b4cd925aef00cc7d843d9fdc75e442
+FROM docker.io/caddy:2.11.8-alpine@sha256:f6228111e5fafa1a5238258d0858e103f10599b8d1659a146e7726681a002bb9
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=builder /app/public /srv
