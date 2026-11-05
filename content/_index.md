@@ -1,28 +1,37 @@
-I am a Platform Engineer with deep expertise in site reliability and DevSecOps principles. My background in Full Stack Web Development provides an engineering-centric perspective when architecting platforms.
+Before I was a platform engineer, I worked as a full-stack web developer using React, Node.js, and a touch of Java. I spent my time building application features, shaping the user experience, and writing backend services. Even so, I kept gravitating toward the DevOps side of the house: automating infrastructure, packaging applications, and wiring up deployments. The pull never let up, so I made the jump to platform engineering!
+
+My start in software development still shapes how I architect platforms: I treat each one as a product developers actually want to use, not a pile of tools they're required to adopt. I'm partial to solving problems at the intersection of software and infrastructure. In practice, I prove out new ideas with working prototypes and turn the ones that hold up into standards across every layer of the platform. The goal is always the same: simplify how teams ship, run, and observe their applications.
 
 ### Platform {icon="cogs"}
-My areas of focus include:
 
-1. Building versatile developer-first platforms with consideration for Day-2 operations
-2. Adopting container orchestration as a secure and scalable landing zone for workloads
-3. Innovating with private and public cloud offerings to solve hybrid/edge business challenges
-4. Embracing GitOps and Infrastructure as Code principles to describe and manage systems
-5. Utilizing CI/CD for standardized, reliable, and tested deployments
-6. Incorporating collaborative security best practices from "Code to Cloud"
+I like getting into the weeds of:
+
+* Multi-cloud and hybrid architecture, managed with infrastructure as code
+* GitOps-driven Kubernetes in the cloud, on-premises, and at the edge
+* Internal developer platforms with self-service golden paths to production
+* Observability, from telemetry collection and governance to the dashboards and alerts teams rely on
+* Reusable CI/CD pipelines and release engineering for consistent, tested deployments
+* Platform security, including policy as code, secrets management, workload identity, and supply chain integrity
 
 ### Software Engineering {icon="wrench"}
-Within the web development space, I have experience with:
 
-1. Developing intuitive and responsive front-ends
-2. Implementing performant and secure APIs
-3. Harnessing mature platforms for caching and data persistence
+When a platform is missing a piece, I build it:
 
-### Other Interests {icon="star"}
+* Go services and Kubernetes controllers for platform automation
+* Terraform providers and other glue between tools
+* Upstream features and fixes for open source projects
+
+### Outside of Work {icon="star"}
+
+What my Saturdays look like:
+
 * Self-hosting, homelabbing, and home automation
-* Contributing to and learning about open source projects
-* Finding bargains (desktop/server hardware, watches, apparel)
-* Coffee and cocktails, enjoyed separately and responsibly
-* Listening to Hip-Hop and R&B
+* Playing co-op video games with my wife
+* Brewing pour-over coffee and whisking matcha
+* Discovering new music and catching concerts
+* Hiking, the more scenic the better
+* Hunting for bargains
 
 ### Get in Touch {icon="comments"}
-Have a question for me? Looking for my resume? Shoot me an [email]({{% param email %}}). Looking forward to hearing from you!
+
+Have a question or want to compare notes? Looking for my resume? Shoot me an [email]({{% param email %}}). I'm always up for talking about platform engineering, open source, interesting problems, or anything on the lists above.

@@ -1,10 +1,10 @@
-# {{ site.Title }}
+# {{ site.Title }} - {{ site.Params.tagline }}
 
 > {{ site.Params.description }}
 
 ## About Me
 
-{{ .RenderShortcodes | replaceRE `(?m)^(#+ .*?) \{[^}]*\}$` "$1" | strings.TrimSpace }}
+{{ partial "markdown.html" . }}
 
 ## Links
 {{ range site.Params.social }}

@@ -11,7 +11,7 @@ RUN npx hugo --minify --cleanDestinationDir --panicOnWarning
 
 RUN node scripts/precompress.mjs public
 
-FROM docker.io/caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
+FROM docker.io/caddy:2.11.8-alpine@sha256:3db3a09e418f86a8fce8de4bc0026fccd2b4cd925aef00cc7d843d9fdc75e442
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=builder /app/public /srv

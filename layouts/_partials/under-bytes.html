@@ -1,0 +1,19 @@
+{{ $out := "" }}
+{{ if ge (len ($.Resource.Process "jpg").Content) $.Max }}
+  {{ $lo := 1 }}
+  {{ $hi := $.Resource.Width }}
+  {{ range seq 7 }}
+    {{ if gt (sub $hi $lo) 1 }}
+      {{ $mid := div (add $lo $hi) 2 }}
+      {{ $r := $.Resource.Process (printf "resize %dx jpg" $mid) }}
+      {{ if lt (len $r.Content) $.Max }}
+        {{ $lo = $mid }}
+        {{ $out = $r }}
+      {{ else }}
+        {{ $hi = $mid }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if not $out }}{{ errorf "%s: no variant of %s under %d bytes" templates.Current.Name $.Resource.Name $.Max }}{{ end }}
+{{ end }}
+{{ return $out }}

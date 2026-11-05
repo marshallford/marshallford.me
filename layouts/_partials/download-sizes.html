@@ -1,0 +1,22 @@
+{{ $out := slice }}
+{{ $prefix := .Prefix | default "" }}
+{{ range .Sizes }}
+  {{ if lt .width $.Resource.Width }}
+    {{ $out = $out | append (dict
+      "label" (strings.TrimSpace (printf "%s %s" $prefix .name))
+      "image" ($.Resource.Process (printf "resize %dx jpg" .width) | resources.Copy (printf "%s-%d.jpg" $.Path .width))) }}
+  {{ end }}
+{{ end }}
+{{ range $cap := slice (dict "name" "Under 500 KB" "file" "500kb" "max" 500000) (dict "name" "Under 1 MB" "file" "1mb" "max" 1000000) }}
+  {{ with partial "under-bytes.html" (dict "Resource" $.Resource "Max" $cap.max) }}
+    {{ $out = $out | append (dict
+      "label" (strings.TrimSpace (printf "%s %s" $prefix $cap.name))
+      "image" (. | resources.Copy (printf "%s-%s.jpg" $.Path $cap.file))) }}
+  {{ end }}
+{{ end }}
+{{ if not .SkipFull }}
+  {{ $out = $out | append (dict
+    "label" (strings.TrimSpace (printf "%s Full" $prefix))
+    "image" ($.Resource.Process "jpg" | resources.Copy (printf "%s-full.jpg" $.Path))) }}
+{{ end }}
+{{ return $out }}
