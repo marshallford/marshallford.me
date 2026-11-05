@@ -20,7 +20,7 @@
     "title" .title
     "preview" (partialCached "hero.html" $heroArgs (jsonify $heroArgs) | resources.Copy (printf "media-kit/preview-%s.png" .suffix))
     "width" 640
-    "class" "w-full rounded-xs"
+    "class" "rounded-xs"
     "downloads" $downloads) }}
 {{ end }}
 {{ $me := resources.Get "images/me.jpg" }}
@@ -57,15 +57,15 @@
       <h2 id="about-me" class="text-xl font-semibold text-mist-50">About Me</h2>
       <span class="text-sm text-mist-400">{{ lang.FormatNumber 0 (strings.RuneCount $plain) }} characters</span>
     </div>
-    <ul role="list" class="divide-y divide-mist-700 rounded-xs border border-mist-700">
+    <ul role="list" class="divide-y divide-mist-700 overflow-hidden rounded-xs border border-mist-700">
       {{ range $formats }}
       <li>
         <details class="group">
-          <summary class="flex cursor-pointer items-center justify-between gap-4 py-3 pr-5 pl-4 text-sm/6 select-none marker:hidden">
-            <span class="font-medium text-mist-50">{{ .name }}</span>
-            {{ partial "icon.html" (dict "name" "chevron-down" "class" "size-4 shrink-0 text-mist-400 transition-transform group-open:rotate-180") }}
+          <summary class="group/summary flex cursor-pointer items-center justify-between gap-4 py-3 pr-5 pl-4 text-sm/6 text-mist-50 select-none marker:hidden -outline-offset-2 hover:bg-amber-200 hover:text-mist-800">
+            <span class="font-medium">{{ .name }}</span>
+            {{ partial "icon.html" (dict "name" "chevron-down" "class" "size-4 text-mist-400 transition-transform group-open:rotate-180 group-hover/summary:text-mist-800") }}
           </summary>
-          <div class="px-4 pb-4">
+          <div class="p-4">
             {{ if .html }}
             <div class="prose rounded-xs bg-white p-4 select-all">{{ .body }}</div>
             {{ else }}
@@ -94,7 +94,7 @@
           <span class="font-medium text-mist-50">{{ .label }}</span>
           <span class="text-mist-400">{{ .image.Width }}×{{ .image.Height }} · {{ upper .image.MediaType.SubType }} · {{ partial "file-size.html" (len .image.Content) }}</span>
         </div>
-        <a href="{{ .image.RelPermalink }}" download class="link shrink-0">Download<span class="sr-only">, {{ $card.title }}, {{ .label }}</span></a>
+        <a href="{{ .image.RelPermalink }}" download class="link">Download<span class="sr-only">, {{ $card.title }}, {{ .label }}</span></a>
       </li>
       {{ end }}
     </ul>

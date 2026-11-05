@@ -50,7 +50,7 @@
       <h2 id="curated-projects" class="border-b-4 border-mist-700 pb-2 text-3xl font-bold tracking-wide text-mist-50 uppercase">Curated Projects</h2>
       <ul role="list" class="divide-y divide-mist-700">
         {{ range $project := hugo.Data.projects }}
-        <li class="py-5">
+        <li class="py-5 first:pt-0 last:pb-0">
           <article class="flex flex-col gap-2">
             <header class="flex flex-wrap items-center gap-2">
               <h3 class="text-xl font-semibold text-mist-50">{{ .title }}</h3>
