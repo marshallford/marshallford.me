@@ -1,0 +1,105 @@
+{{ define "main" }}
+{{ $crops := slice
+  (dict "label" "4:1" "file" "4x1" "crop" (dict "ratio" 4 "left" 0.1182 "top" 0.025 "width" 0.7637) "sizes" (slice (dict "name" "Medium" "width" 1584)))
+  (dict "label" "3:1" "file" "3x1" "crop" (dict "ratio" 3 "left" 0.1182 "top" 0.017 "width" 0.7637) "sizes" (slice (dict "name" "Medium" "width" 1500)))
+  (dict "label" "Original" "file" "original") }}
+{{ $cards := slice }}
+{{ range $style := slice (dict "title" "Blurred Background" "suffix" "blur" "blurred" true) (dict "title" "Sharp Background" "suffix" "sharp" "blurred" false) }}
+  {{ $heroArgs := dict "Blurred" .blurred "Format" "png" }}
+  {{ $downloads := slice }}
+  {{ range $crops }}
+    {{ $args := $heroArgs }}
+    {{ with .crop }}{{ $args = merge $args (dict "Crop" .) }}{{ end }}
+    {{ $downloads = $downloads | append (partial "download-sizes.html" (dict
+      "Resource" (partialCached "hero.html" $args (jsonify $args))
+      "Prefix" .label
+      "Path" (printf "media-kit/background-%s-%s" .file $style.suffix)
+      "Sizes" .sizes)) }}
+  {{ end }}
+  {{ $cards = $cards | append (dict
+    "title" .title
+    "preview" (partialCached "hero.html" $heroArgs (jsonify $heroArgs) | resources.Copy (printf "media-kit/preview-%s.png" .suffix))
+    "width" 640
+    "class" "w-full rounded-xs"
+    "downloads" $downloads) }}
+{{ end }}
+{{ $me := resources.Get "images/me.jpg" }}
+{{ $cards = $cards | append (dict
+  "title" "Profile Photo"
+  "preview" ($me | resources.Copy "media-kit/preview-profile.jpg")
+  "width" 384
+  "class" "rounded-xs"
+  "downloads" (partial "download-sizes.html" (dict
+    "Resource" $me
+    "Path" "media-kit/profile"
+    "SkipFull" true
+    "Sizes" (slice (dict "name" "Small" "width" 400) (dict "name" "Medium" "width" 1024))))) }}
+{{ $headline := printf "%s | %s" site.Params.tagline (strings.TrimSuffix "." site.Params.description) }}
+{{ $rich := partial "rich-text.html" site.Home.Content }}
+{{ $plain := partial "plain-text.html" $rich }}
+{{ $formats := slice
+  (dict "name" "Plain text" "body" $plain "class" "font-sans")
+  (dict "name" "Markdown" "body" (partial "markdown.html" site.Home))
+  (dict "name" "Rich text" "body" $rich "html" true) }}
+<main class="mx-auto flex max-w-prose flex-col gap-12 px-5 py-14">
+  <h1 class="border-b-4 border-mist-700 pb-2 text-3xl font-bold tracking-wide text-mist-50 uppercase">{{ .Title }}</h1>
+
+  <section class="flex flex-col gap-4" aria-labelledby="headline">
+    <div class="flex flex-wrap items-baseline gap-x-3">
+      <h2 id="headline" class="text-xl font-semibold text-mist-50">Headline</h2>
+      <span class="text-sm text-mist-400">{{ lang.FormatNumber 0 (strings.RuneCount $headline) }} characters</span>
+    </div>
+    <p class="rounded-xs bg-mist-900 p-4 leading-7 select-all">{{ $headline }}</p>
+  </section>
+
+  <section class="flex flex-col gap-4" aria-labelledby="about-me">
+    <div class="flex flex-wrap items-baseline gap-x-3">
+      <h2 id="about-me" class="text-xl font-semibold text-mist-50">About Me</h2>
+      <span class="text-sm text-mist-400">{{ lang.FormatNumber 0 (strings.RuneCount $plain) }} characters</span>
+    </div>
+    <ul role="list" class="divide-y divide-mist-700 rounded-xs border border-mist-700">
+      {{ range $formats }}
+      <li>
+        <details class="group">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 py-3 pr-5 pl-4 text-sm/6 select-none marker:hidden">
+            <span class="font-medium text-mist-50">{{ .name }}</span>
+            {{ partial "icon.html" (dict "name" "chevron-down" "class" "size-4 shrink-0 text-mist-400 transition-transform group-open:rotate-180") }}
+          </summary>
+          <div class="px-4 pb-4">
+            {{ if .html }}
+            <div class="prose rounded-xs bg-white p-4 select-all">{{ .body }}</div>
+            {{ else }}
+            <pre class="rounded-xs bg-mist-900 p-4 leading-7 whitespace-pre-wrap select-all{{ with .class }} {{ . }}{{ end }}">{{ .body }}</pre>
+            {{ end }}
+          </div>
+        </details>
+      </li>
+      {{ end }}
+    </ul>
+  </section>
+
+  {{ range $i, $card := $cards }}
+  <section class="flex flex-col gap-4" aria-labelledby="{{ urlize $card.title }}">
+    <h2 id="{{ urlize $card.title }}" class="text-xl font-semibold text-mist-50">{{ $card.title }}</h2>
+    {{ partial "img.html" (dict
+      "Resource" $card.preview
+      "Alt" $card.title
+      "Width" $card.width
+      "Eager" (eq $i 0)
+      "Class" $card.class) }}
+    <ul role="list" class="divide-y divide-mist-700 rounded-xs border border-mist-700">
+      {{ range $card.downloads }}
+      <li class="flex items-center justify-between gap-4 py-3 pr-5 pl-4 text-sm/6">
+        <div class="flex min-w-0 flex-1 flex-wrap gap-x-2">
+          <span class="font-medium text-mist-50">{{ .label }}</span>
+          <span class="text-mist-400">{{ .image.Width }}×{{ .image.Height }} · {{ upper .image.MediaType.SubType }} · {{ partial "file-size.html" (len .image.Content) }}</span>
+        </div>
+        <a href="{{ .image.RelPermalink }}" download class="link shrink-0">Download<span class="sr-only">, {{ $card.title }}, {{ .label }}</span></a>
+      </li>
+      {{ end }}
+    </ul>
+  </section>
+  {{ end }}
+</main>
+{{ partial "footer.html" . }}
+{{ end }}

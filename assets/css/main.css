@@ -29,7 +29,11 @@
   --tw-prose-invert-counters: var(--color-mist-400);
   --tw-prose-invert-bullets: var(--color-mist-400);
 
-  @apply prose-a:font-bold prose-a:hover:bg-amber-200 prose-a:hover:text-mist-800;
+  @apply prose-a:link;
+}
+
+@utility link {
+  @apply font-bold text-amber-200 underline hover:bg-amber-200 hover:text-mist-800;
 }
 
 @font-face {

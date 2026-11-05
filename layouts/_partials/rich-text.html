@@ -1,0 +1,1 @@
+{{ return (. | replaceRE ` ?<svg[\s\S]*?</svg>` "" | safeHTML) }}

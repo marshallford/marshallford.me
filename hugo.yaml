@@ -6,7 +6,7 @@ disableHugoGeneratorInject: true
 
 params:
   tagline: Platform Engineer  # second half of the hero headline and the title
-  description: Platform engineer with deep expertise in site reliability and DevSecOps.
+  description: Simplifying how software is shipped, run, and observed wherever it lives.
   themeColor: '#22292b' # sRGB of Tailwind's mist-800, unresolvable outside CSS
   repository: https://github.com/marshallford/marshallford.me
   email: &email mailto:inbox@marshallford.me
@@ -59,6 +59,11 @@ minify:
 imaging:
   resampleFilter: lanczos
   avif:
+    quality: 75
+    hint: photo
+  jpeg:
+    quality: 90
+  webp:
     quality: 75
     hint: photo
 

@@ -1,10 +1,6 @@
 {{ define "main" }}
-{{ $hero := resources.Get "images/header.jpg" | images.Filter
-  (images.Process "fill 2560x1206 center")
-  (images.GaussianBlur 5)
-  (images.Gamma 0.72)
-  (images.Saturation 5)
-  (images.ColorBalance 0 0 -20) }}
+{{ $heroArgs := dict "Blurred" true }}
+{{ $hero := partialCached "hero.html" $heroArgs (jsonify $heroArgs) }}
 {{ $lqip := $hero.Resize "32x avif" }}
 <header
   class="relative isolate flex min-h-svh flex-col"
@@ -72,8 +68,6 @@
     </section>
   </main>
 
-  <footer class="px-5 py-8 text-center text-sm text-mist-400">
-    {{ site.Title }} · Powered by Hugo{{ with site.Params.commit }} · Build {{ substr . 0 7 }}{{ else }}{{ errorf "%s: missing HUGO_PARAMS_COMMIT" templates.Current.Name }}{{ end }}
-  </footer>
+  {{ partial "footer.html" . }}
 </div>
 {{ end }}

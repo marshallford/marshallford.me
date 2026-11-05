@@ -39,6 +39,9 @@
 	@revalidate not path /images/* /css/* /fonts/*
 	header @revalidate Cache-Control "no-cache"
 
+	@noindex path /media-kit /media-kit/*
+	header @noindex X-Robots-Tag "noindex, nofollow"
+
 	handle_errors {
 		import security_headers
 		header Cache-Control "no-cache"

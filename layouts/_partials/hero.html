@@ -1,0 +1,20 @@
+{{ $src := resources.Get "images/header.jpg" }}
+{{ $hero := dict "width" 2560 "height" 1206 "blur" 5 }}
+{{ $blur := $hero.blur }}
+{{ $filters := slice }}
+{{ with .Crop }}
+  {{ $h := int (div (math.Round (mul $src.Width .width)) .ratio) }}
+  {{ $w := int (mul $h .ratio) }}
+  {{ $x := int (math.Round (mul $src.Width .left)) }}
+  {{ $y := int (math.Round (mul $src.Height .top)) }}
+  {{ $filters = $filters | append
+    (images.Process (printf "crop %dx%d TopLeft" (add $x $w) (add $y $h)))
+    (images.Process (printf "crop %dx%d BottomRight" $w $h)) }}
+  {{ $blur = div $blur (math.Max (div (float $hero.width) $src.Width) (div (float $hero.height) $src.Height)) }}
+{{ else }}
+  {{ $filters = $filters | append (images.Process (printf "fill %dx%d center" $hero.width $hero.height)) }}
+{{ end }}
+{{ if .Blurred }}{{ $filters = $filters | append (images.GaussianBlur $blur) }}{{ end }}
+{{ $filters = $filters | append (images.Gamma 0.72) (images.Saturation 5) (images.ColorBalance 0 0 -20) }}
+{{ with .Format }}{{ $filters = $filters | append (images.Process .) }}{{ end }}
+{{ return ($src | images.Filter $filters) }}

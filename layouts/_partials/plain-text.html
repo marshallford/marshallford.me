@@ -1,0 +1,1 @@
+{{ return (. | replaceRE `<li>` "• " | replaceRE `</(p|h\d|ul)>` "\n" | replaceRE `<[^>]+>` "" | replaceRE `&[lr]squo;` "'" | replaceRE `&[lr]dquo;` `"` | htmlUnescape | replaceRE `\n{3,}` "\n\n" | strings.TrimSpace) }}
