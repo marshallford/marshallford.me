@@ -27,10 +27,10 @@ jobs:
       IMAGE: us-central1-docker.pkg.dev/marshallford-marshallford-me/containers/marshallford-me
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.1
     - name: Publish container image
       id: publish
-      uses: ./.github/actions/container-image
+      uses: $/.github/actions/container-image
       with:
         push: true
         image: ${{ env.IMAGE }}
@@ -60,24 +60,26 @@ jobs:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # TODO replace with Workload Identity Federation in new project/org
     steps:
     - name: Checkout
-      uses: actions/checkout@v7
+      uses: actions/checkout@v7.0.1
     - name: Configure AWS credentials for terraform state
-      uses: aws-actions/configure-aws-credentials@v6
+      uses: aws-actions/configure-aws-credentials@v6.3.0
       with:
         role-to-assume: arn:aws:iam::626319225102:role/pipeline-terraform-state
         aws-region: us-east-1
         aws-profile: terraform-state
     - name: Configure AWS credentials for marshallford.me
-      uses: aws-actions/configure-aws-credentials@v6
+      uses: aws-actions/configure-aws-credentials@v6.3.0
       with:
         role-to-assume: arn:aws:iam::438616359965:role/pipeline-marshallford-me-iac
         aws-region: us-east-1
         aws-profile: marshallford-me
     - name: Read Terraform version
       id: terraform-version
-      run: echo "version=$(< .terraform-version)" >> "$GITHUB_OUTPUT"
+      uses: $/.github/actions/terraform-version
+      with:
+        path: terraform
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v4
+      uses: hashicorp/setup-terraform@v4.0.1
       with:
         terraform_version: ${{ steps.terraform-version.outputs.version }}
         terraform_wrapper: false
